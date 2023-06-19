@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerShooter : MonoBehaviour
 {
+    [SerializeField] Gun gun;
     [SerializeField] float reloadTime;
     [SerializeField] Rig aimRig;
     [SerializeField] WeaponHolder weaponHolder;
@@ -16,13 +17,14 @@ public class PlayerShooter : MonoBehaviour
     private void Awake()
     {
         anim = GetComponent<Animator>();
+        gun = GetComponentInChildren<Gun>();
     }
 
     private void OnReload(InputValue value)
     {
         if (isReloading) return;
 
-        StartCoroutine(ReloadingRoutine());
+        Reload();
     }
 
     IEnumerator ReloadingRoutine()
@@ -35,10 +37,18 @@ public class PlayerShooter : MonoBehaviour
         aimRig.weight = 1f;
     }
 
+    public void Reload()
+    {
+        StartCoroutine(ReloadingRoutine());
+        gun.bulletUsed = 0;
+        gun.bulletRemain = gun.bulletCapacity;
+    }
+
     public void Fire()
     {
         weaponHolder.Fire();
         anim.SetTrigger("Fire");
+
     }
 
     private void OnFire(InputValue value)

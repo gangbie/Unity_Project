@@ -8,6 +8,6 @@ public class WeaponHolder : MonoBehaviour
 
     public void Fire()
     {
-
+        gun.Fire();
     }
 }
