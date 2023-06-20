@@ -4,5 +4,6 @@ using UnityEngine;
 
 public interface IHittable
 {
-    public void Hit(RaycastHit hit, int damage);
+    bool ApplyDamage(DamageMessage damageMessage);
+    public void Hit(GameObject sender, RaycastHit hit);
 }

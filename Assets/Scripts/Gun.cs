@@ -28,23 +28,52 @@ public class Gun : MonoBehaviour
         }
 
         RaycastHit hit;
-        if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, maxDistance))
+        var hitPosition = Vector3.zero;
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, maxDistance))
         {
-            LivingEntity hittable = hit.transform.GetComponent<LivingEntity>();
             ParticleSystem effectMetal = GameManager.Resource.Instantiate(hitEffectMetal, hit.point, Quaternion.LookRotation(hit.normal));
             effectMetal.transform.parent = hit.transform;
-            
+
             StartCoroutine(ReleaseRoutine(effectMetal.gameObject));
 
-            StartCoroutine(TrailRoutine(muzzleEffect.transform.position, hit.point));
+            var target = hit.collider.GetComponent<IHittable>();
 
-            hittable?.Hit(hit, damage);
+            if (target != null)
+            {
+                DamageMessage damageMessage;
+
+                damageMessage.damager = shooter.gameObject;
+                damageMessage.amount = damage;
+                damageMessage.hitPoint = hit.point;
+                damageMessage.hitNormal = hit.normal;
+                target.Hit(gameObject, hit);
+                target.ApplyDamage(damageMessage);
+            }
+            else
+            {
+                
+            }
+            hitPosition = hit.point;
+
         }
         else
         {
-            StartCoroutine(TrailRoutine(muzzleEffect.transform.position, Camera.main.transform.forward * maxDistance));
+            hitPosition = Camera.main.transform.position + Camera.main.transform.forward * maxDistance;
         }
+
+
+            // LivingEntity hittable = hit.transform.GetComponent<LivingEntity>();
+        
+
+        StartCoroutine(TrailRoutine(muzzleEffect.transform.position, hitPosition));
+
+        // hittable?.Hit(hit, damage);
     }
+    //    else
+    //    {
+    //        StartCoroutine(TrailRoutine(muzzleEffect.transform.position, Camera.main.transform.forward * maxDistance));
+    //    }
+    //}
 
     IEnumerator ReleaseRoutine(GameObject effect)
     {

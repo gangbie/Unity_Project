@@ -35,13 +35,14 @@ public class PlayerShooter : MonoBehaviour
         yield return new WaitForSeconds(reloadTime);
         isReloading = false;
         aimRig.weight = 1f;
+
+        gun.bulletUsed = 0;
+        gun.bulletRemain = gun.bulletCapacity;
     }
 
     public void Reload()
     {
         StartCoroutine(ReloadingRoutine());
-        gun.bulletUsed = 0;
-        gun.bulletRemain = gun.bulletCapacity;
     }
 
     public void Fire()

@@ -3,9 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class LivingEntity : MonoBehaviour, IHittable
 {
+    private NavMeshAgent agent;
+    private Rigidbody rb;
+
     public float startingHealth = 100f;
     public float health { get; protected set; }
     public bool dead { get; protected set; }
@@ -14,6 +18,11 @@ public class LivingEntity : MonoBehaviour, IHittable
 
     private const float minTimeBetDamaged = 0.1f;
     private float lastDamagedTime;
+    protected virtual void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
+    }
 
     protected bool IsInvulnerable
     {
@@ -31,6 +40,24 @@ public class LivingEntity : MonoBehaviour, IHittable
         health = startingHealth;
     }
 
+    public bool ApplyDamage(DamageMessage damageMessage)
+    {
+        if (IsInvulnerable || damageMessage.damager == gameObject || dead) return false;
+
+        lastDamagedTime = Time.time;
+        health -= damageMessage.amount;
+        if (health <= 0) { Die(); }
+
+        return true;
+    }
+
+    public virtual void RestoreHealth(float newHealth)
+    {
+        if (dead) return;
+
+        health += newHealth;
+    }
+
     public virtual void Die()
     {
         if (OnDeath != null) OnDeath();
@@ -38,16 +65,29 @@ public class LivingEntity : MonoBehaviour, IHittable
         dead = true;
     }
 
-    public void Hit(RaycastHit hit, int damage)
+    public void Hit(GameObject sender, RaycastHit hit)
     {
-        // if (IsInvulnerable || dead)
-
-        lastDamagedTime = Time.deltaTime;
-        health -= damage;
-
-        if (health <= 0) Die();
-
-        // return true;
+        Vector3 dir = (transform.position - sender.transform.position).normalized;
+        agent.Move(2f * dir);
+        /*if (rb != null)
+        {
+            rb.AddForceAtPosition(-10 * hit.normal, hit.point, ForceMode.Impulse);
+        }*/
     }
-    
+
+
+
+    // public void Hit(RaycastHit hit, int damage)
+    // {
+    //     // if (IsInvulnerable || dead)
+    // 
+    //     lastDamagedTime = Time.deltaTime;
+    //     health -= damage;
+    // 
+    //     if (health <= 0) Die();
+    // 
+    //     // return true;
+    // }
+
+
 }
