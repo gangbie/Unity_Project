@@ -40,7 +40,7 @@ public class LivingEntity : MonoBehaviour, IHittable
         health = startingHealth;
     }
 
-    public bool ApplyDamage(DamageMessage damageMessage)
+    public virtual bool ApplyDamage(DamageMessage damageMessage)
     {
         if (IsInvulnerable || damageMessage.damager == gameObject || dead) return false;
 
