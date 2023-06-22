@@ -33,8 +33,10 @@ public class Enemy : LivingEntity
 
     private enum State
     {
-        Idle, Patrol, Trace, AttackBegin, Attacking
+        Idle, Patrol, Trace, Attacking, Die
     }
+
+    StateMachine<State, Enemy> stateMachine;
 
     private State state;
 
@@ -68,6 +70,14 @@ public class Enemy : LivingEntity
             new Vector3(attackRoot.position.x, transform.position.y, attackRoot.position.z)) + attackRange;
 
         attackDistance += agent.radius;
+
+        stateMachine = new StateMachine<State, Enemy>(this);
+        stateMachine.AddState(State.Idle,      new IdleState(this, stateMachine));
+        stateMachine.AddState(State.Patrol,    new PatrolState(this, stateMachine));
+        stateMachine.AddState(State.Trace,     new TraceState(this, stateMachine));
+        stateMachine.AddState(State.Attacking, new AttackingState(this, stateMachine));
+        stateMachine.AddState(State.Die,       new DieState(this, stateMachine));
+
     }
 
     public void Setup(float health, float damage,
@@ -89,22 +99,14 @@ public class Enemy : LivingEntity
     private void Start()
     {
         targetEntity = null;
-        state = State.Idle;
-        StartCoroutine(UpdatePath());
+        stateMachine.SetUp(State.Idle);
+        StartCoroutine(AIRoutine());
     }
 
     private void Update()
     {
-        if (dead) return;
+        stateMachine.Update();
 
-        if (state == State.Trace &&
-            Vector3.Distance(targetEntity.transform.position, transform.position) <= attackDistance)
-        {
-            BeginAttack();
-        }
-
-
-        // 추적 대상의 존재 여부에 따라 다른 애니메이션을 재생
         anim.SetFloat("Speed", agent.desiredVelocity.magnitude);
     }
 
@@ -112,19 +114,18 @@ public class Enemy : LivingEntity
     {
         if (dead) return;
 
-
-        if (state == State.AttackBegin || state == State.Attacking)
-        {
-            var lookRotation =
-                Quaternion.LookRotation(targetEntity.transform.position - transform.position);
-            var targetAngleY = lookRotation.eulerAngles.y;
-
-            transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngleY,
-                                        ref turnSmoothVelocity, turnSmoothTime);
-        }
-
         if (state == State.Attacking)
         {
+            // targetEntity 바라보기
+            if (targetEntity != null)
+            {
+                var lookRotation = Quaternion.LookRotation(targetEntity.transform.position - transform.position);
+                var targetAngleY = lookRotation.eulerAngles.y;
+                transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngleY,
+                ref turnSmoothVelocity, turnSmoothTime);
+            }
+
+            // 공격할 타겟 감지 및 공격 처리
             var direction = transform.forward;
             var deltaDistance = agent.velocity.magnitude * Time.deltaTime;
 
@@ -137,11 +138,12 @@ public class Enemy : LivingEntity
 
                 if (attackTargetEntity != null && !lastAttackedTargets.Contains(attackTargetEntity))
                 {
+
                     var message = new DamageMessage();
                     message.amount = damage;
                     message.damager = gameObject;
 
-                    if (hits[i].distance <= 0f)
+                    if (hits[i].distance <= 0.5f)
                     {
                         message.hitPoint = attackRoot.position;
                     }
@@ -161,64 +163,33 @@ public class Enemy : LivingEntity
         }
     }
 
-    // 주기적으로 추적할 대상의 위치를 찾아 경로를 갱신
-    private IEnumerator UpdatePath()
+    private IEnumerator AIRoutine()
     {
-        // 살아있는 동안 무한 루프
         while (!dead)
         {
-            if (hasTarget)
+            var colliders = Physics.OverlapSphere(eyeTransform.position, viewDistance, targetMask);
+            foreach (var collider in colliders)
             {
-                if (state == State.Patrol)
+                // if (!IsTargetOnSight(collider.transform)) continue;
+
+                var livingEntity = collider.GetComponent<LivingEntity>();
+
+                // LivingEntity 컴포넌트가 존재하며, 해당 LivingEntity가 살아있다면,
+                if (livingEntity != null && !livingEntity.dead)
                 {
-                    state = State.Trace;
-                    agent.speed = runSpeed;
-                }
-
-                // 추적 대상 존재 : 경로를 갱신하고 AI 이동을 계속 진행
-                agent.SetDestination(targetEntity.transform.position);
-            }
-            else
-            {
-                if (targetEntity != null) targetEntity = null;
-
-                if (state != State.Patrol)
-                {
-                    state = State.Patrol;
-                    agent.speed = patrolSpeed;
-                }
-
-                if (agent.remainingDistance <= 1f)
-                {
-                    var patrolPosition = Utility.GetRandomPointOnNavMesh(transform.position, 20f, NavMesh.AllAreas);
-                    agent.SetDestination(patrolPosition);
-                }
-
-                // 20 유닛의 반지름을 가진 가상의 구를 그렸을때, 구와 겹치는 모든 콜라이더를 가져옴
-                // 단, whatIsTarget 레이어를 가진 콜라이더만 가져오도록 필터링
-                var colliders = Physics.OverlapSphere(eyeTransform.position, viewDistance, targetMask);
-
-                // 모든 콜라이더들을 순회하면서, 살아있는 LivingEntity 찾기
-                foreach (var collider in colliders)
-                {
-                    if (!IsTargetOnSight(collider.transform)) continue;
-
-                    var livingEntity = collider.GetComponent<LivingEntity>();
-
-                    // LivingEntity 컴포넌트가 존재하며, 해당 LivingEntity가 살아있다면,
-                    if (livingEntity != null && !livingEntity.dead)
-                    {
-                        // 추적 대상을 해당 LivingEntity로 설정
-                        targetEntity = livingEntity;
-
-                        // for문 루프 즉시 정지
-                        break;
-                    }
+                    // 추적 대상을 해당 LivingEntity로 설정
+                    targetEntity = livingEntity;
+                    Debug.Log("AI코루틴 돌던중 타겟 찾음");
+                    Debug.Log(hasTarget);
+                    // for문 루프 즉시 정지
+                    break;
                 }
             }
-
-            // 0.05 초 주기로 처리 반복
-            yield return new WaitForSeconds(0.05f);
+            if (colliders.Length == 0)
+            {
+                targetEntity = null;
+            }
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -238,14 +209,6 @@ public class Enemy : LivingEntity
         return true;
     }
 
-    public void BeginAttack()
-    {
-        state = State.AttackBegin;
-
-        agent.isStopped = true;
-        anim.SetTrigger("Attack");
-    }
-
     public void EnableAttack()
     {
         state = State.Attacking;
@@ -257,11 +220,11 @@ public class Enemy : LivingEntity
     {
         if (hasTarget)
         {
-            state = State.Trace;
+            stateMachine.ChangeState(State.Attacking);
         }
         else
         {
-            state = State.Patrol;
+            stateMachine.ChangeState(State.Patrol);
         }
 
         agent.isStopped = false;
@@ -293,20 +256,252 @@ public class Enemy : LivingEntity
     // 사망 처리
     public override void Die()
     {
-        // LivingEntity의 Die()를 실행하여 기본 사망 처리 실행
         base.Die();
-
-        // 다른 AI들을 방해하지 않도록 자신의 모든 콜라이더들을 비활성화
         GetComponent<Collider>().enabled = false;
-
-        // AI 추적을 중지하고 내비메쉬 컴포넌트를 비활성화
         agent.enabled = false;
-
-        // 사망 애니메이션 재생
+        StartCoroutine(DieRoutine());
+    }
+    private IEnumerator DieRoutine()
+    {
         anim.applyRootMotion = true;
         anim.SetTrigger("Die");
 
-        // 사망 효과음 재생
-        // if (deathClip != null) audioPlayer.PlayOneShot(deathClip);
+        yield return new WaitForSeconds(4);
+        Destroy(gameObject);
+    }
+
+    private abstract class EnemyState : StateBase<State, Enemy>
+    {
+        protected GameObject gameObject => owner.gameObject;
+        protected Transform transform => owner.transform;
+        protected NavMeshAgent agent => owner.agent;
+        protected Animator anim => owner.anim;
+
+        protected EnemyState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        {
+        }
+    }
+
+    private class IdleState : EnemyState
+    {
+        private NavMeshAgent agent;
+        private bool hasTarget;
+        public IdleState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        {
+        }
+        public override void Setup()
+        {
+            agent = owner.agent;
+        }
+        public override void Enter()
+        {
+            Debug.Log("IdleState Enter");
+            Debug.Log(owner.hasTarget);
+            agent.isStopped = true;
+            agent.speed = 0;
+            idleRoutine = owner.StartCoroutine(IdleRoutine());
+        }
+        public override void Update()
+        {
+        }
+
+        public override void Transition()
+        {
+            if (owner.hasTarget)
+            {
+                stateMachine.ChangeState(State.Trace);
+            }
+        }
+        public override void Exit()
+        {
+            owner.StopCoroutine(idleRoutine);
+            Debug.Log("IdleState Exit");
+        }
+
+        Coroutine idleRoutine;
+        private IEnumerator IdleRoutine()
+        {
+            yield return new WaitForSeconds(3);
+            agent.isStopped = false;
+            stateMachine.ChangeState(State.Patrol);
+        }
+    }
+
+    private class PatrolState : EnemyState
+    {
+        private NavMeshAgent agent;
+        private int routineNum;
+        public PatrolState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        {
+        }
+        public override void Setup()
+        {
+            agent = owner.agent;
+        }
+        public override void Enter()
+        {
+            routineNum = 0;
+            agent.stoppingDistance = 0;
+            Debug.Log("PatrolState Enter");
+            Debug.Log(owner.hasTarget);
+            agent.speed = owner.patrolSpeed;
+            agent.SetDestination(transform.position);
+            patrolRoutine = owner.StartCoroutine(PatrolRoutine());
+        }
+        public override void Update()
+        {
+            
+        }
+
+        public override void Transition()
+        {
+            if (owner.hasTarget)
+            {
+                stateMachine.ChangeState(State.Trace);
+            }
+            else if (routineNum == 5)
+            {
+                stateMachine.ChangeState(State.Idle);
+            }
+        }
+        public override void Exit()
+        {
+            owner.StopCoroutine(patrolRoutine);
+            Debug.Log("PatrolState Exit");
+        }
+
+        Coroutine patrolRoutine;
+        private IEnumerator PatrolRoutine()
+        {
+            while (!owner.hasTarget)
+            {
+                if (agent.remainingDistance <= 1f)
+                {
+                    routineNum++;
+                    Debug.Log(routineNum);
+                    var patrolPosition = Utility.GetRandomPointOnNavMesh(transform.position, 7f, NavMesh.AllAreas);
+                    agent.SetDestination(patrolPosition);
+                }
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+    }
+
+    private class TraceState : EnemyState
+    {
+        private NavMeshAgent agent;
+        private float attackDistance;
+        public TraceState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        {
+        }
+        public override void Setup()
+        {
+            agent = owner.agent;
+            attackDistance = owner.attackDistance;
+        }
+        public override void Enter()
+        {
+            Debug.Log("TraceState Enter");
+            Debug.Log(owner.hasTarget);
+            agent.speed = owner.runSpeed;
+            traceRoutine = owner.StartCoroutine(TraceRoutine());
+        }
+        public override void Update()
+        {
+            
+        }
+
+        public override void Transition()
+        {
+            if (!owner.hasTarget)
+            {
+                stateMachine.ChangeState(State.Patrol);
+            }
+            else if (Vector3.Distance(owner.targetEntity.transform.position, owner.transform.position) <= owner.attackDistance)
+            {
+                stateMachine.ChangeState(State.Attacking);
+            }
+        }
+        public override void Exit()
+        {
+            Debug.Log("TraceState Exit");
+            owner.StopCoroutine(traceRoutine);
+        }
+
+        Coroutine traceRoutine;
+        private IEnumerator TraceRoutine()
+        {
+            while (owner.hasTarget)
+            {
+                // Debug.Log("Trace 코루틴 돌아감");
+                agent.SetDestination(owner.targetEntity.transform.position);
+                agent.stoppingDistance = attackDistance;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+    }
+
+    private class AttackingState : EnemyState
+    {
+        private NavMeshAgent agent;
+        private Animator anim;
+        private float attackDistance;
+        public AttackingState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        {
+        }
+        public override void Setup()
+        {
+            agent = owner.agent;
+            anim = owner.anim;
+            attackDistance = owner.attackDistance;
+        }
+        public override void Enter()
+        {
+            Debug.Log("AttakingState Enter");
+            Debug.Log(owner.hasTarget);
+            agent.isStopped = true;
+            anim.SetTrigger("Attack");
+        }
+        public override void Update()
+        {
+        }
+
+        public override void Transition()
+        {
+            if (Vector3.Distance(owner.targetEntity.transform.position, transform.position) > attackDistance + 1f)
+            {
+                agent.isStopped = false;
+                stateMachine.ChangeState(State.Trace);
+            }
+        }
+        public override void Exit()
+        {
+            Debug.Log("AttackingState Exit");
+        }
+    }
+
+    // 체력 0 되면 어차피 Die()의 base.Die() 실행되어 죽기 때문에 DieState는 필요 없을듯?
+    private class DieState : EnemyState
+    {
+        // private NavMeshAgent agent;
+        public DieState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        {
+        }
+        public override void Setup()
+        {
+        }
+        public override void Enter()
+        {
+        }
+        public override void Update()
+        {
+        }
+
+        public override void Transition()
+        {
+        }
+        public override void Exit()
+        {
+        }
     }
 }

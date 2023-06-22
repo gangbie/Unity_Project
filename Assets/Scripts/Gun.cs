@@ -33,8 +33,18 @@ public class Gun : MonoBehaviour
         {
             ParticleSystem effectMetal = GameManager.Resource.Instantiate(hitEffectMetal, hit.point, Quaternion.LookRotation(hit.normal));
             effectMetal.transform.parent = hit.transform;
+            ParticleSystem effectHuman = GameManager.Resource.Instantiate(hitEffectHuman, hit.point, Quaternion.LookRotation(hit.normal));
+            effectHuman.transform.parent = hit.transform;
 
-            StartCoroutine(ReleaseRoutine(effectMetal.gameObject));
+            if (hit.transform.gameObject.layer == 7)
+            {
+                StartCoroutine(ReleaseRoutine(effectHuman.gameObject));
+            }
+            else
+            {
+                StartCoroutine(ReleaseRoutine(effectMetal.gameObject));
+            }
+
 
             var target = hit.collider.GetComponent<IHittable>();
 
