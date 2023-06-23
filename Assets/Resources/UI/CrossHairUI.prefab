@@ -317,7 +317,7 @@ GameObject:
   - component: {fileID: 520092480397655488}
   - component: {fileID: 520092480397655489}
   m_Layer: 5
-  m_Name: FirePointCanvas
+  m_Name: CrossHairUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

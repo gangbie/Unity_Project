@@ -10,13 +10,18 @@ public class GameManager : MonoBehaviour
     private static GameManager instance;
     private static PoolManager poolManager;
     private static ResourceManager resource;
+    private static UIManager ui;
+    private static SceneManager sceneManager;
+    private static DataManager dataManager;
+
     public static GameManager Instance { get { return instance; } }
     public static PoolManager Pool { get { return poolManager; } }
     public static ResourceManager Resource { get { return resource; } }
+    public static UIManager UI { get { return ui; } }
+    public static SceneManager Scene { get { return sceneManager; } }
+    public static DataManager data { get { return dataManager; } }
 
-    private int score;
-    public bool isGameover { get; private set; }
-
+    
     private void Awake()
     {
         if (instance != null)
@@ -28,21 +33,6 @@ public class GameManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
         InitManagers();
-    }
-
-    public void AddScore(int newScore)
-    {
-        if (!isGameover)
-        {
-            score += newScore;
-            // UIManager.Instance.UpdateScoreText(score);
-        }
-    }
-
-    public void EndGame()
-    {
-        isGameover = true;
-        // UIManager.Instance.SetActiveGameoverUI(true);
     }
 
     private void OnDestroy()
@@ -62,5 +52,21 @@ public class GameManager : MonoBehaviour
         resourceObj.name = "ResourceManager";
         resourceObj.transform.parent = transform;
         resource = resourceObj.AddComponent<ResourceManager>();
+
+        GameObject UIObj = new GameObject();
+        UIObj.name = "UIManager";
+        UIObj.transform.parent = transform;
+        ui = UIObj.AddComponent<UIManager>();
+
+        GameObject sceneObj = new GameObject();
+        sceneObj.name = "SceneManager";
+        sceneObj.transform.parent = transform;
+        sceneManager = sceneObj.AddComponent<SceneManager>();
+
+        GameObject dataObj = new GameObject();
+        dataObj.name = "DataManager";
+        dataObj.transform.parent = transform;
+        dataManager = dataObj.AddComponent<DataManager>();
     }
+    
 }

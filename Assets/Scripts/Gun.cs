@@ -12,7 +12,8 @@ public class Gun : MonoBehaviour
     [SerializeField] float bulletSpeed;
     [SerializeField] float maxDistance;
     [SerializeField] int damage;
-    
+
+    public LayerMask enemyLayer;
     public int bulletCapacity = 30;
     public int bulletRemain;
     public int bulletUsed;
@@ -22,6 +23,8 @@ public class Gun : MonoBehaviour
         muzzleEffect.Play();
         bulletUsed++;
         bulletRemain = bulletCapacity - bulletUsed;
+        GameManager.data.Bullet = bulletRemain;
+
         if (bulletRemain <= 0)
         {
             shooter.Reload();
@@ -31,20 +34,18 @@ public class Gun : MonoBehaviour
         var hitPosition = Vector3.zero;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, maxDistance))
         {
-            ParticleSystem effectMetal = GameManager.Resource.Instantiate(hitEffectMetal, hit.point, Quaternion.LookRotation(hit.normal));
-            effectMetal.transform.parent = hit.transform;
-            ParticleSystem effectHuman = GameManager.Resource.Instantiate(hitEffectHuman, hit.point, Quaternion.LookRotation(hit.normal));
-            effectHuman.transform.parent = hit.transform;
-
-            if (hit.transform.gameObject.layer == 7)
+            if (((1 << hit.transform.gameObject.layer) & enemyLayer) != 0)
             {
+                ParticleSystem effectHuman = GameManager.Resource.Instantiate(hitEffectHuman, hit.point, Quaternion.LookRotation(hit.normal));
+                effectHuman.transform.parent = hit.transform;
                 StartCoroutine(ReleaseRoutine(effectHuman.gameObject));
             }
             else
             {
+                ParticleSystem effectMetal = GameManager.Resource.Instantiate(hitEffectMetal, hit.point, Quaternion.LookRotation(hit.normal));
+                effectMetal.transform.parent = hit.transform;
                 StartCoroutine(ReleaseRoutine(effectMetal.gameObject));
             }
-
 
             var target = hit.collider.GetComponent<IHittable>();
 

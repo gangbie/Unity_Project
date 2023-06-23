@@ -265,6 +265,7 @@ public class Enemy : LivingEntity
     {
         anim.applyRootMotion = true;
         anim.SetTrigger("Die");
+        GameManager.data.UpdateScore(100);
 
         yield return new WaitForSeconds(4);
         Destroy(gameObject);

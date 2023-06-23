@@ -34,7 +34,7 @@ public class LivingEntity : MonoBehaviour, IHittable
         }
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         dead = false;
         health = startingHealth;
@@ -74,20 +74,4 @@ public class LivingEntity : MonoBehaviour, IHittable
             rb.AddForceAtPosition(-10 * hit.normal, hit.point, ForceMode.Impulse);
         }*/
     }
-
-
-
-    // public void Hit(RaycastHit hit, int damage)
-    // {
-    //     // if (IsInvulnerable || dead)
-    // 
-    //     lastDamagedTime = Time.deltaTime;
-    //     health -= damage;
-    // 
-    //     if (health <= 0) Die();
-    // 
-    //     // return true;
-    // }
-
-
 }
