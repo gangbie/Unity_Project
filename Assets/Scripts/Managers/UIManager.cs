@@ -8,10 +8,10 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private TMP_Text RemainHP;
-    [SerializeField] private TMP_Text LifeCount;
-    [SerializeField] private TMP_Text ScoreCount;
-    [SerializeField] private TMP_Text RemainBullet;
+    // [SerializeField] private TMP_Text RemainHP;
+    // [SerializeField] private TMP_Text LifeCount;
+    // [SerializeField] private TMP_Text ScoreCount;
+    // [SerializeField] private TMP_Text RemainBullet;
 
     private EventSystem eventSystem;
 
@@ -26,10 +26,10 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        RemainHP = GetComponent<TMP_Text>();
-        LifeCount = GetComponent<TMP_Text>();
-        ScoreCount = GetComponent<TMP_Text>();
-        RemainBullet = GetComponent<TMP_Text>();
+        // RemainHP = GetComponent<TMP_Text>();
+        // LifeCount = GetComponent<TMP_Text>();
+        // ScoreCount = GetComponent<TMP_Text>();
+        // RemainBullet = GetComponent<TMP_Text>();
 
         eventSystem = GameManager.Resource.Instantiate<EventSystem>("UI/EventSystem");
         eventSystem.transform.parent = transform;
@@ -108,30 +108,30 @@ public class UIManager : MonoBehaviour
     }
 
 
-    public void UpdateScoreText(int newScore)  // 'scoreText' 점수 UI 갱신
-    {
-        ScoreCount.text = "" + newScore;
-    }
-
-    public void UpdateLifeText(int count)  // 'lifeText' 남은 생명 수 UI 갱신
-    {
-        LifeCount.text = "" + count;
-    }
-
-    public void UpdateHealthText(float health) // 'healthText' 남은 HP UI 갱신
-    {
-        RemainHP.text = Mathf.Floor(health).ToString(); // 체력의 소숫점을 내림한 후 문자열로 바꿈
-    }
-
-    public void SetActiveGameoverUI(bool active) // 게임 오버시 'GameOver' UI 활성화
-    {
-        gameoverUI.SetActive(active);
-    }
-
-    public void SetActiveCrossHairUI(bool active) // 크로스 헤어 UI 활성화
-    {
-        crosshair.SetActive(active);
-    }
+    // public void UpdateScoreText(int newScore)  // 'scoreText' 점수 UI 갱신
+    // {
+    //     ScoreCount.text = "" + newScore;
+    // }
+    // 
+    // public void UpdateLifeText(int count)  // 'lifeText' 남은 생명 수 UI 갱신
+    // {
+    //     LifeCount.text = "" + count;
+    // }
+    // 
+    // public void UpdateHealthText(float health) // 'healthText' 남은 HP UI 갱신
+    // {
+    //     RemainHP.text = Mathf.Floor(health).ToString(); // 체력의 소숫점을 내림한 후 문자열로 바꿈
+    // }
+    // 
+    // public void SetActiveGameoverUI(bool active) // 게임 오버시 'GameOver' UI 활성화
+    // {
+    //     gameoverUI.SetActive(active);
+    // }
+    // 
+    // public void SetActiveCrossHairUI(bool active) // 크로스 헤어 UI 활성화
+    // {
+    //     crosshair.SetActive(active);
+    // }
 
     // public void GameRestart()  // 게임 Over 상태에서 Restart 버튼을 눌렀을 때 실행시킬 함수. 게임 재 시작
     // {

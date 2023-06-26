@@ -17,13 +17,16 @@ public class Gun : MonoBehaviour
     public int bulletCapacity = 30;
     public int bulletRemain;
     public int bulletUsed;
-
+    private void OnEnable()
+    {
+        GameManager.data.UpdateBullet(bulletRemain);
+    }
     public void Fire()
     {
         muzzleEffect.Play();
         bulletUsed++;
         bulletRemain = bulletCapacity - bulletUsed;
-        GameManager.data.Bullet = bulletRemain;
+        GameManager.data.UpdateBullet(bulletRemain);
 
         if (bulletRemain <= 0)
         {

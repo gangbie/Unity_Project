@@ -38,6 +38,7 @@ public class PlayerShooter : MonoBehaviour
 
         gun.bulletUsed = 0;
         gun.bulletRemain = gun.bulletCapacity;
+        GameManager.data.UpdateBullet(gun.bulletRemain);
     }
 
     public void Reload()

@@ -6,30 +6,29 @@ using UnityEngine.Events;
 
 public class DataManager : MonoBehaviour
 {
-    private int life; // 현재 Life 
-    private int score; // 현재 게임 점수
+    public PlayerHealth player;
+    private Gun gun;
+
     private float hp;
+    private int life;
     private int bullet;
+    private int score;
 
     private void Awake()
     {
-
+        life = 3;
     }
 
     public bool isGameover { get; private set; } // 게임 오버 상태
 
-    public int Life { get { return life; } set { life = value; } }
-    public int Bullet { get { return bullet; } set { bullet = value; } }
-    public int Score
-    {
-        get { return score; }
-        set
-        {
-            score = value;
-            OnScoreChanged?.Invoke(score);
-        }
-    }
-    public event UnityAction<float> OnScoreChanged;
+    public float Hp { get {  return hp; } private set { hp = value; OnChangeHp?.Invoke(); } }
+    public UnityAction OnChangeHp;
+    public int Life { get { return life; } private set { life = value; OnChangeLife?.Invoke(); } }
+    public UnityAction OnChangeLife;
+    public int Bullet { get { return bullet; } private set { bullet = value; OnChangeBullet?.Invoke(); } }
+    public UnityAction OnChangeBullet;
+    public int Score { get { return score; } private set { score = value; OnChangeScore?.Invoke(); } }
+    public UnityAction OnChangeScore;
 
     public void UpdateScore(int newScore)
     {
@@ -37,19 +36,26 @@ public class DataManager : MonoBehaviour
         if (!isGameover)
         {
             // 점수 추가
-            score += newScore;
-            // 점수 UI 텍스트 갱신
-            GameManager.UI.UpdateScoreText(score);
+            Score += newScore;
         }
+    }
+
+    public void UpdateHp(float hp)
+    {
+        if (!isGameover)
+            Hp = hp;
     }
 
     public void UpdateLife()
     {
         if (!isGameover)
-        {
             life--;
-            GameManager.UI.UpdateLifeText(life);
-        }
+    }
+
+    public void UpdateBullet(int bullet)
+    {
+        if (!isGameover)
+            Bullet = bullet;
     }
 
     // 게임 오버 처리
@@ -58,7 +64,7 @@ public class DataManager : MonoBehaviour
         // 게임 오버 상태를 참으로 변경
         isGameover = true;
         // 게임 오버 UI를 활성화
-        GameManager.UI.SetActiveGameoverUI(true);
+        // GameManager.UI.SetActiveGameoverUI(true);
     }
 
     

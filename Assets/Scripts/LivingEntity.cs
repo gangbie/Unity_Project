@@ -69,9 +69,5 @@ public class LivingEntity : MonoBehaviour, IHittable
     {
         Vector3 dir = (transform.position - sender.transform.position).normalized;
         agent.Move(2f * dir);
-        /*if (rb != null)
-        {
-            rb.AddForceAtPosition(-10 * hit.normal, hit.point, ForceMode.Impulse);
-        }*/
     }
 }

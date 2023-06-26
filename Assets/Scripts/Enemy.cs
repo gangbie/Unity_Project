@@ -9,6 +9,8 @@ using UnityEditor;
 
 public class Enemy : LivingEntity
 {
+    [SerializeField] PlayerMover playerMover;
+
     [SerializeField] float runSpeed;
     [SerializeField, Range(0.01f, 2f)] float turnSmoothTime;
     private float turnSmoothVelocity;
@@ -18,7 +20,7 @@ public class Enemy : LivingEntity
     private float attackDistance;
 
     [SerializeField] float fieldOfView;
-    [SerializeField] float viewDistance;
+    [SerializeField] public float viewDistance;
     [SerializeField] float patrolSpeed;
 
     [SerializeField] float walkRadius;
@@ -167,6 +169,14 @@ public class Enemy : LivingEntity
     {
         while (!dead)
         {
+            if (playerMover.isWalking)
+            {
+                viewDistance = 5;
+            }
+            else
+            {
+                viewDistance = 10;
+            }
             var colliders = Physics.OverlapSphere(eyeTransform.position, viewDistance, targetMask);
             foreach (var collider in colliders)
             {

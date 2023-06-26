@@ -15,7 +15,7 @@ public class PlayerMover : MonoBehaviour
     private Vector3 moveDir;
     private float moveSpeed;
     private float ySpeed = 0;
-    private bool isWalking;
+    public bool isWalking;
     private bool isJumping;
 
     private void Awake()
