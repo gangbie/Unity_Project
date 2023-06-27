@@ -8,11 +8,6 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    // [SerializeField] private TMP_Text RemainHP;
-    // [SerializeField] private TMP_Text LifeCount;
-    // [SerializeField] private TMP_Text ScoreCount;
-    // [SerializeField] private TMP_Text RemainBullet;
-
     private EventSystem eventSystem;
 
     private Canvas popUpCanvas;
@@ -20,17 +15,12 @@ public class UIManager : MonoBehaviour
 
     private Canvas windowCanvas;
 
-    private GameObject gameoverUI;
-    private GameObject crosshair;
+    // private GameObject gameoverUI;
+    // private GameObject crosshair;
     
 
     private void Awake()
     {
-        // RemainHP = GetComponent<TMP_Text>();
-        // LifeCount = GetComponent<TMP_Text>();
-        // ScoreCount = GetComponent<TMP_Text>();
-        // RemainBullet = GetComponent<TMP_Text>();
-
         eventSystem = GameManager.Resource.Instantiate<EventSystem>("UI/EventSystem");
         eventSystem.transform.parent = transform;
 
@@ -47,6 +37,7 @@ public class UIManager : MonoBehaviour
 
     public T ShowPopUpUI<T>(T popUpui) where T : PopUpUI
     {
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
         if (popUpStack.Count > 0)
         {
             PopUpUI prevUI = popUpStack.Peek();
@@ -65,6 +56,7 @@ public class UIManager : MonoBehaviour
 
     public T ShowPopUpUI<T>(string path) where T : PopUpUI
     {
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
         T ui = GameManager.Resource.Load<T>(path);
         return ShowPopUpUI(ui);
     }
@@ -81,6 +73,7 @@ public class UIManager : MonoBehaviour
         }
         if (popUpStack.Count == 0)
         {
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             Time.timeScale = 1;
         }
     }

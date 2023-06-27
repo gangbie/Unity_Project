@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Resources;
@@ -7,6 +8,13 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    // public GameObject player;
+    // public Transform playerSpawnPosition;
+    // public CinemachineVirtualCamera virtualCamera;
+
+    // public bool isPlayerDead { get; private set; } // dead 상태
+    // public bool isGameover { get; private set; } // 게임 오버 상태
+
     private static GameManager instance;
     private static PoolManager poolManager;
     private static ResourceManager resource;
@@ -33,6 +41,7 @@ public class GameManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
         InitManagers();
+
     }
 
     private void OnDestroy()
@@ -43,15 +52,15 @@ public class GameManager : MonoBehaviour
 
     private void InitManagers()
     {
-        GameObject poolObj = new GameObject();
-        poolObj.name = "PoolManager";
-        poolObj.transform.parent = transform;
-        poolManager = poolObj.AddComponent<PoolManager>();
-
         GameObject resourceObj = new GameObject();
         resourceObj.name = "ResourceManager";
         resourceObj.transform.parent = transform;
         resource = resourceObj.AddComponent<ResourceManager>();
+
+        GameObject poolObj = new GameObject();
+        poolObj.name = "PoolManager";
+        poolObj.transform.parent = transform;
+        poolManager = poolObj.AddComponent<PoolManager>();
 
         GameObject UIObj = new GameObject();
         UIObj.name = "UIManager";
@@ -68,5 +77,39 @@ public class GameManager : MonoBehaviour
         dataObj.transform.parent = transform;
         dataManager = dataObj.AddComponent<DataManager>();
     }
-    
+
+    // public void Rebirth()
+    // {
+    //     // GameObject player = Instantiate(playerPrefab, playerSpawnPosition.position, playerSpawnPosition.rotation);
+    //     // Transform cameraRoot = player.transform;
+    // 
+    //     // player.transform.position = playerSpawnPosition.position;
+    //     // player.transform.rotation = playerSpawnPosition.rotation;
+    //     player.RestoreHealth(100);
+    //     gameObject.SetActive(true);
+    //     isPlayerDead = false;
+    // }
+    // 
+    // public void PlayerDead()
+    // {
+    //     isPlayerDead = true;
+    // 
+    //     GameManager.data.UpdateLife(GameManager.data.Life - 1);
+    //     if (GameManager.data.Life < 0)
+    //     {
+    //         EndGame();
+    //     }
+    //     else
+    //     {
+    //         Rebirth();
+    //     }
+    // }
+    // 
+    // public void EndGame()
+    // {
+    //     // 게임 오버 상태를 참으로 변경
+    //     isGameover = true;
+    //     // 게임 오버 UI를 활성화
+    //     GameManager.UI.ShowPopUpUI<PopUpUI>("UI/GameOverUI");
+    // }
 }

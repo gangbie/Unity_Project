@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,10 +6,9 @@ using UnityEngine.Animations.Rigging;
 
 public class PlayerHealth : LivingEntity
 {
+    [SerializeField] GameSceneFlow gameSceneFlow;
     [SerializeField] Rig rig;
     private Animator anim;
-    public int life;
-    public int score;
 
     private void Awake()
     {
@@ -19,21 +19,14 @@ public class PlayerHealth : LivingEntity
         // LivingEntity의 OnEnable() 실행 (상태 초기화)
         base.OnEnable();
         GameManager.data.UpdateHp(health);
-        // UpdateUI();
+        GameManager.data.UpdateLife(GameManager.data.Life);
     }
 
     public override void RestoreHealth(float newHealth)
     {
         // LivingEntity의 RestoreHealth() 실행 (체력 증가)
         base.RestoreHealth(newHealth);
-        // 체력 갱신
-        // UpdateUI();
     }
-
-    // private void UpdateUI()
-    // {
-    //     GameManager.UI.UpdateHealthText(dead ? 0f : health);
-    // }
 
     public override bool ApplyDamage(DamageMessage damageMessage)
     {
@@ -43,8 +36,6 @@ public class PlayerHealth : LivingEntity
         // playerAudioPlayer.PlayOneShot(hitClip);
 
         // LivingEntity의 OnDamage() 실행(데미지 적용)
-        // 갱신된 체력을 체력 슬라이더에 반영
-        // UpdateUI();
         GameManager.data.UpdateHp(health);
         return true;
     }
@@ -59,27 +50,38 @@ public class PlayerHealth : LivingEntity
 
     private IEnumerator DieRoutine()
     {
-        anim.applyRootMotion = true;
+        // anim.applyRootMotion = true;
         anim.SetTrigger("Die");
         anim.SetLayerWeight(1, 0);
         rig.weight = 0;
 
-
-        GameManager.data.UpdateLife();
-        if (GameManager.data.Life < 0)
-        {
-            GameManager.data.EndGame();
-        }
-        else
-        {
-            Rebirth();
-        }
         yield return new WaitForSeconds(4);
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+        gameSceneFlow.PlayerDead();
+
+        // GameManager.data.UpdateLife(GameManager.data.Life - 1);
+        // if (GameManager.data.Life < 0)
+        // {
+        //     GameManager.data.EndGame();
+        // }
+        // else
+        // {
+        //     yield return new WaitForSeconds(4);
+        //     //Destroy(gameObject);
+        //     gameObject.SetActive(false);
+        //     Rebirth();
+        // }
+
     }
 
-    public void Rebirth()
-    {
-        // Instantiate(playerPrefab, playerSpawnPosition.position, playerSpawnPosition.rotation);
-    }
+    // public void Rebirth()
+    // {
+    //     // GameObject player = Instantiate(playerPrefab, playerSpawnPosition.position, playerSpawnPosition.rotation);
+    //     // virtualCamera.Follow = cameraRoot.transform;
+    // 
+    //     this.transform.position = playerSpawnPosition.position;
+    //     this.transform.rotation = playerSpawnPosition.rotation;
+    //     this.health = 100;
+    //     gameObject.SetActive(true);
+    // }
 }

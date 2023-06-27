@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameOverUI : MonoBehaviour
+public class GameOverUI : PopUpUI
 {
-    // Start is called before the first frame update
-    void Start()
+    protected override void Awake()
     {
-        
+        base.Awake();
+
+        buttons["OkButton"].onClick.AddListener(() => { GoToMainScene(); });
     }
 
-    // Update is called once per frame
-    void Update()
+    public void GoToMainScene()
     {
-        
+        GameManager.Scene.LoadScene("MainScene");
     }
 }

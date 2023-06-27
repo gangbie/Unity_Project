@@ -19,7 +19,7 @@ public class Gun : MonoBehaviour
     public int bulletUsed;
     private void OnEnable()
     {
-        GameManager.data.UpdateBullet(bulletRemain);
+        GameManager.data.UpdateBullet(bulletCapacity - bulletUsed);
     }
     public void Fire()
     {

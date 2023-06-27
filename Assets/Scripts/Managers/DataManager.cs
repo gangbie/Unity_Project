@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class DataManager : MonoBehaviour
 {
+    private GameSceneFlow gameSceneFlow;
     public PlayerHealth player;
     private Gun gun;
 
@@ -46,10 +47,10 @@ public class DataManager : MonoBehaviour
             Hp = hp;
     }
 
-    public void UpdateLife()
+    public void UpdateLife(int life)
     {
         if (!isGameover)
-            life--;
+            Life = life;
     }
 
     public void UpdateBullet(int bullet)
@@ -64,7 +65,7 @@ public class DataManager : MonoBehaviour
         // 게임 오버 상태를 참으로 변경
         isGameover = true;
         // 게임 오버 UI를 활성화
-        // GameManager.UI.SetActiveGameoverUI(true);
+        GameManager.UI.ShowPopUpUI<PopUpUI>("UI/GameOverUI");
     }
 
     
