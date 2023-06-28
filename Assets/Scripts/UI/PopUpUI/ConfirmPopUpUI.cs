@@ -8,7 +8,14 @@ public class ConfirmPopUpUI : PopUpUI
     {
         base.Awake();
 
-        buttons["SaveButton"].onClick.AddListener(() => { GameManager.UI.ClosePopUpUI(); });
+        buttons["SaveButton"].onClick.AddListener(() => { GoToMainScene(); });
         buttons["CancelButton"].onClick.AddListener(() => { GameManager.UI.ClosePopUpUI(); });
+    }
+
+    public void GoToMainScene()
+    {
+        GameManager.UI.ClosePopUpUI();
+        GameManager.UI.ClosePopUpUI();
+        GameManager.Scene.LoadScene("MainScene");
     }
 }

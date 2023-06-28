@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -9,7 +10,9 @@ using UnityEditor;
 
 public class Enemy : LivingEntity
 {
-    [SerializeField] PlayerMover playerMover;
+    private GameObject player;
+    private PlayerMover playerMover;
+    // [SerializeField] PlayerMover playerMover;
 
     [SerializeField] float runSpeed;
     [SerializeField, Range(0.01f, 2f)] float turnSmoothTime;
@@ -25,8 +28,10 @@ public class Enemy : LivingEntity
 
     [SerializeField] float walkRadius;
 
-    [SerializeField] LivingEntity targetEntity;
+    private LivingEntity targetEntity;
     public LayerMask targetMask;
+
+    public UnityEvent<int> OnChangeHP;
 
     private RaycastHit[] hits = new RaycastHit[10];
     private List<LivingEntity> lastAttackedTargets = new List<LivingEntity>();
@@ -65,6 +70,9 @@ public class Enemy : LivingEntity
     protected override void Awake()
     {
         base.Awake();
+        player = GameObject.FindWithTag("Player");
+        playerMover = player.GetComponent<PlayerMover>();
+        targetEntity = player.GetComponent<LivingEntity>();
 
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
@@ -275,10 +283,10 @@ public class Enemy : LivingEntity
     {
         anim.applyRootMotion = true;
         anim.SetTrigger("Die");
-        GameManager.data.UpdateScore(100);
+        //1 GameManager.data.UpdateScore(100);
 
         yield return new WaitForSeconds(4);
-        Destroy(gameObject);
+        //1 Destroy(gameObject);
     }
 
     private abstract class EnemyState : StateBase<State, Enemy>

@@ -17,7 +17,16 @@ public class DataManager : MonoBehaviour
 
     private void Awake()
     {
-        life = 3;
+        Init();
+    }
+
+    public void Init()
+    {
+        isGameover = false;
+        Life = 3;
+        UpdateScore(0);
+        UpdateHp(100);
+        UpdateBullet(30);
     }
 
     public bool isGameover { get; private set; } // 게임 오버 상태
@@ -44,7 +53,7 @@ public class DataManager : MonoBehaviour
     public void UpdateHp(float hp)
     {
         if (!isGameover)
-            Hp = hp;
+            Hp = (int)hp;
     }
 
     public void UpdateLife(int life)

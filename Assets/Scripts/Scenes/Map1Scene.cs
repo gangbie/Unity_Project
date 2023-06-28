@@ -1,16 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class Map1Scene : BaseScene
 {
-    // public GameObject playerPrefab;
-    // public Transform playerPosition;
-    // public GameObject zombiePrefab;
-    // public Transform zombiePosition;
-
     protected override IEnumerator LoadingRoutine()
     {
+        GameManager.UI.Init();
+        GameManager.Pool.Init();
+        GameManager.data.Init();
+
+
         progress = 0.0f;
         yield return new WaitForSecondsRealtime(1f);
         progress = 0.2f;

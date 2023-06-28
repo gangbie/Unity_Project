@@ -24,6 +24,12 @@ public class UIManager : MonoBehaviour
         eventSystem = GameManager.Resource.Instantiate<EventSystem>("UI/EventSystem");
         eventSystem.transform.parent = transform;
 
+        Init();
+
+    }
+
+    public void Init()
+    {
         popUpCanvas = GameManager.Resource.Instantiate<Canvas>("UI/Canvas");
         popUpCanvas.gameObject.name = "PopUpCanvas";
         popUpCanvas.sortingOrder = 100;
@@ -32,7 +38,6 @@ public class UIManager : MonoBehaviour
         windowCanvas = GameManager.Resource.Instantiate<Canvas>("UI/Canvas");
         windowCanvas.gameObject.name = "WindowCanvas";
         windowCanvas.sortingOrder = 10;
-
     }
 
     public T ShowPopUpUI<T>(T popUpui) where T : PopUpUI

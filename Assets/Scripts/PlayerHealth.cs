@@ -9,10 +9,18 @@ public class PlayerHealth : LivingEntity
     [SerializeField] GameSceneFlow gameSceneFlow;
     [SerializeField] Rig rig;
     private Animator anim;
-
+    private PlayerMover mover;
+    // private PlayerShooter shooter;
+    // [SerializeField] Gun gun;
+    public bool deadCheckForShooter;
     private void Awake()
     {
+        deadCheckForShooter = false; // 살아있음
+
         anim = GetComponent<Animator>();
+        mover = GetComponent<PlayerMover>();
+        // shooter = GetComponent<PlayerShooter>();
+        // gun = this.gameObject.GetComponentInChildren<Gun>();
     }
     protected override void OnEnable()
     {
@@ -42,9 +50,12 @@ public class PlayerHealth : LivingEntity
 
     public override void Die()
     {
+        deadCheckForShooter = true;
         // LivingEntity의 Die() 실행(사망 적용)
         base.Die();
-
+        mover.enabled = false;
+        // shooter.enabled = false;
+        // gun.enabled = false;
         StartCoroutine(DieRoutine());
     }
 

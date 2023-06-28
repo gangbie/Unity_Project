@@ -12,6 +12,11 @@ public class PoolManager : MonoBehaviour
 
     private void Awake()
     {
+        Init();
+    }
+
+    public void Init()
+    {
         poolDic = new Dictionary<string, ObjectPool<GameObject>>();
         poolContainer = new Dictionary<string, Transform>();
         poolRoot = new GameObject("PoolRoot").transform;

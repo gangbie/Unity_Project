@@ -11,6 +11,8 @@ public class PlayerShooter : MonoBehaviour
     [SerializeField] Rig aimRig;
     [SerializeField] WeaponHolder weaponHolder;
 
+    private PlayerHealth player;
+
     private Animator anim;
     private bool isReloading;
 
@@ -18,11 +20,14 @@ public class PlayerShooter : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         gun = GetComponentInChildren<Gun>();
+        //gameSceneFlow = GetComponent<GameSceneFlow>();
+        player = gameObject.GetComponent<PlayerHealth>();
     }
 
     private void OnReload(InputValue value)
     {
         if (isReloading) return;
+        if (gun.bulletRemain == 30) return;
 
         Reload();
     }
@@ -50,12 +55,14 @@ public class PlayerShooter : MonoBehaviour
     {
         weaponHolder.Fire();
         anim.SetTrigger("Fire");
-
     }
 
     private void OnFire(InputValue value)
     {
         if (isReloading)
+            return;
+
+        if (player.deadCheckForShooter == true)
             return;
 
         Fire();

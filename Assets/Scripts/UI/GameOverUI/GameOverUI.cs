@@ -13,6 +13,7 @@ public class GameOverUI : PopUpUI
 
     public void GoToMainScene()
     {
+        GameManager.UI.ClosePopUpUI();
         GameManager.Scene.LoadScene("MainScene");
     }
 }
