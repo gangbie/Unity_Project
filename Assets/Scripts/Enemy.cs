@@ -31,7 +31,7 @@ public class Enemy : LivingEntity
     private LivingEntity targetEntity;
     public LayerMask targetMask;
 
-    public UnityEvent<int> OnChangeHP;
+    public UnityEvent<float> OnChangeHP;
 
     private RaycastHit[] hits = new RaycastHit[10];
     private List<LivingEntity> lastAttackedTargets = new List<LivingEntity>();
@@ -197,8 +197,8 @@ public class Enemy : LivingEntity
                 {
                     // 추적 대상을 해당 LivingEntity로 설정
                     targetEntity = livingEntity;
-                    Debug.Log("AI코루틴 돌던중 타겟 찾음");
-                    Debug.Log(hasTarget);
+                    // Debug.Log("AI코루틴 돌던중 타겟 찾음");
+                    // Debug.Log(hasTarget);
                     // for문 루프 즉시 정지
                     break;
                 }
@@ -223,7 +223,7 @@ public class Enemy : LivingEntity
 
         // EffectManager.Instance.PlayHitEffect(damageMessage.hitPoint, damageMessage.hitNormal, transform, EffectManager.EffectType.Flesh);
         // audioPlayer.PlayOneShot(hitClip);
-
+        OnChangeHP?.Invoke(health);
         return true;
     }
 
@@ -314,8 +314,8 @@ public class Enemy : LivingEntity
         }
         public override void Enter()
         {
-            Debug.Log("IdleState Enter");
-            Debug.Log(owner.hasTarget);
+            // Debug.Log("IdleState Enter");
+            // Debug.Log(owner.hasTarget);
             agent.isStopped = true;
             agent.speed = 0;
             idleRoutine = owner.StartCoroutine(IdleRoutine());
@@ -334,7 +334,7 @@ public class Enemy : LivingEntity
         public override void Exit()
         {
             owner.StopCoroutine(idleRoutine);
-            Debug.Log("IdleState Exit");
+            // Debug.Log("IdleState Exit");
         }
 
         Coroutine idleRoutine;
@@ -361,8 +361,8 @@ public class Enemy : LivingEntity
         {
             routineNum = 0;
             agent.stoppingDistance = 0;
-            Debug.Log("PatrolState Enter");
-            Debug.Log(owner.hasTarget);
+            // Debug.Log("PatrolState Enter");
+            // Debug.Log(owner.hasTarget);
             agent.speed = owner.patrolSpeed;
             agent.SetDestination(transform.position);
             patrolRoutine = owner.StartCoroutine(PatrolRoutine());
@@ -386,7 +386,7 @@ public class Enemy : LivingEntity
         public override void Exit()
         {
             owner.StopCoroutine(patrolRoutine);
-            Debug.Log("PatrolState Exit");
+            // Debug.Log("PatrolState Exit");
         }
 
         Coroutine patrolRoutine;
@@ -397,7 +397,7 @@ public class Enemy : LivingEntity
                 if (agent.remainingDistance <= 1f)
                 {
                     routineNum++;
-                    Debug.Log(routineNum);
+                    // Debug.Log(routineNum);
                     var patrolPosition = Utility.GetRandomPointOnNavMesh(transform.position, 7f, NavMesh.AllAreas);
                     agent.SetDestination(patrolPosition);
                 }
@@ -420,8 +420,8 @@ public class Enemy : LivingEntity
         }
         public override void Enter()
         {
-            Debug.Log("TraceState Enter");
-            Debug.Log(owner.hasTarget);
+            // Debug.Log("TraceState Enter");
+            // Debug.Log(owner.hasTarget);
             agent.speed = owner.runSpeed;
             traceRoutine = owner.StartCoroutine(TraceRoutine());
         }
@@ -443,7 +443,7 @@ public class Enemy : LivingEntity
         }
         public override void Exit()
         {
-            Debug.Log("TraceState Exit");
+            // Debug.Log("TraceState Exit");
             owner.StopCoroutine(traceRoutine);
         }
 
@@ -476,8 +476,8 @@ public class Enemy : LivingEntity
         }
         public override void Enter()
         {
-            Debug.Log("AttakingState Enter");
-            Debug.Log(owner.hasTarget);
+            // Debug.Log("AttakingState Enter");
+            // Debug.Log(owner.hasTarget);
             agent.isStopped = true;
             anim.SetTrigger("Attack");
         }
@@ -495,7 +495,7 @@ public class Enemy : LivingEntity
         }
         public override void Exit()
         {
-            Debug.Log("AttackingState Exit");
+            // Debug.Log("AttackingState Exit");
         }
     }
 

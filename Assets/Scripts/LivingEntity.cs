@@ -24,15 +24,15 @@ public class LivingEntity : MonoBehaviour, IHittable
         agent = GetComponent<NavMeshAgent>();
     }
 
-    protected bool IsInvulnerable
-    {
-        get
-        {
-            if (Time.deltaTime <= lastDamagedTime + minTimeBetDamaged) return false;
-
-            return true;
-        }
-    }
+    // protected bool IsInvulnerable
+    // {
+    //     get
+    //     {
+    //         if (Time.deltaTime <= lastDamagedTime + minTimeBetDamaged) return false;
+    // 
+    //         return true;
+    //     }
+    // }
 
     protected virtual void OnEnable()
     {
@@ -42,11 +42,12 @@ public class LivingEntity : MonoBehaviour, IHittable
 
     public virtual bool ApplyDamage(DamageMessage damageMessage)
     {
-        if (IsInvulnerable || damageMessage.damager == gameObject || dead) return false;
+        if (/*IsInvulnerable ||*/ damageMessage.damager == gameObject || dead) return false;
 
-        lastDamagedTime = Time.time;
+        // lastDamagedTime = Time.time;
         health -= damageMessage.amount;
-        if (health <= 0) { Die(); }
+
+        if (health <= 0) Die();
 
         return true;
     }

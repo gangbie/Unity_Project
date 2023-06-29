@@ -53,6 +53,12 @@ public class PlayerMover : MonoBehaviour
         anim.SetFloat("Speed", moveSpeed);
     }
 
+    // public void MoveBack(Vector3 dir)
+    // {
+    //     Debug.Log("hit back");
+    //     controller.Move(dir * 3f);
+    // }
+
     private void OnMove(InputValue value)
     {
         Vector2 input = value.Get<Vector2>();

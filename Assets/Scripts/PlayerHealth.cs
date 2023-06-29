@@ -40,12 +40,17 @@ public class PlayerHealth : LivingEntity
     {
         if (!base.ApplyDamage(damageMessage)) return false;
 
+        GameManager.data.UpdateHp(health);
+        return true;
+
         // EffectManager.Instance.PlayHitEffect(damageMessage.hitPoint, damageMessage.hitNormal, transform, EffectManager.EffectType.Flesh);
         // playerAudioPlayer.PlayOneShot(hitClip);
 
+        // Vector3 hitBackDir = (damageMessage.damager.transform.position - this.transform.position).normalized;
+        // hitBackDir = Vector3.Lerp(hitBackDir, Vector3.zero, Time.deltaTime);
+        // mover.MoveBack(hitBackDir);
+
         // LivingEntity의 OnDamage() 실행(데미지 적용)
-        GameManager.data.UpdateHp(health);
-        return true;
     }
 
     public override void Die()

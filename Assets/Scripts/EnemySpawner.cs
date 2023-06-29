@@ -6,16 +6,16 @@ public class EnemySpawner : MonoBehaviour
 {
     private readonly List<Enemy> enemies = new List<Enemy>();
 
-    public float damageMax = 40f; // 최대 공격력
-    public float damageMin = 20f; // 최소 공격력
+    private float damageMax = 20f; // 최대 공격력
+    private float damageMin = 10f; // 최소 공격력
     public Enemy enemyPrefab; // 생성할 적 AI
 
-    public float healthMax = 200f; // 최대 체력
-    public float healthMin = 100f; // 최소 체력
+    private float healthMax = 110f; // 최대 체력
+    private float healthMin = 100f; // 최소 체력
 
     [SerializeField] Transform[] spawnPoints; // 적 AI를 소환할 위치들
 
-    public float speedMax = 12f; // 최대 속도
+    public float speedMax = 7f; // 최대 속도
     public float speedMin = 3f; // 최소 속도
 
     public Color strongEnemyColor = Color.red; // 강한 적 AI가 가지게 될 피부색
@@ -66,8 +66,8 @@ public class EnemySpawner : MonoBehaviour
 
         enemy.OnDeath += () => enemies.Remove(enemy);
         // 사망한 적을 10 초 뒤에 파괴
-        enemy.OnDeath += () => Destroy(enemy.gameObject, 3f);
+        enemy.OnDeath += () => Destroy(enemy.gameObject, 2.5f);
         // 적 사망시 점수 상승
-        enemy.OnDeath += () => GameManager.data.UpdateScore(100);
+        enemy.OnDeath += () => GameManager.data.UpdateScore(10);
     }
 }

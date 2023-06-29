@@ -20,7 +20,7 @@ public class GameInfoUI : SceneUI
         GameManager.data.OnChangeHp += () => { texts["RemainHP"].text = GameManager.data.Hp.ToString(); };
         GameManager.data.OnChangeLife += () => { LifeCount.text = GameManager.data.Life.ToString(); };
         GameManager.data.OnChangeScore += () => { ScoreCount.text = GameManager.data.Score.ToString(); };
-        GameManager.data.OnChangeBullet += () => { RemainBullet.text = GameManager.data.Bullet.ToString(); };
+        GameManager.data.OnChangeBullet += () => { Debug.Log(GameManager.data.Bullet); RemainBullet.text = GameManager.data.Bullet.ToString(); };
 
         // texts["RemainHP"].text = GameManager.data.Hp.ToString();
         // LifeCount.text = GameManager.data.Life.ToString();
