@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.Events;
 
 public class PlayerHealth : LivingEntity
 {
@@ -10,8 +11,8 @@ public class PlayerHealth : LivingEntity
     [SerializeField] Rig rig;
     private Animator anim;
     private PlayerMover mover;
-    // private PlayerShooter shooter;
-    // [SerializeField] Gun gun;
+    public UnityEvent OnDamaged;
+    public UnityEvent OnHealed;
     public bool deadCheckForShooter;
     private void Awake()
     {
@@ -22,6 +23,7 @@ public class PlayerHealth : LivingEntity
         // shooter = GetComponent<PlayerShooter>();
         // gun = this.gameObject.GetComponentInChildren<Gun>();
     }
+
     protected override void OnEnable()
     {
         // LivingEntity의 OnEnable() 실행 (상태 초기화)
@@ -34,23 +36,23 @@ public class PlayerHealth : LivingEntity
     {
         // LivingEntity의 RestoreHealth() 실행 (체력 증가)
         base.RestoreHealth(newHealth);
+        OnHealed.Invoke();
     }
 
     public override bool ApplyDamage(DamageMessage damageMessage)
     {
         if (!base.ApplyDamage(damageMessage)) return false;
 
+        // GameManager.UI.ShowPopUpUI<PopUpUI>("UI/PlayerDamagedEffect");
+
         GameManager.data.UpdateHp(health);
+        OnDamaged.Invoke();
+
+
+        Vector3 hitBackDir = (this.transform.position - damageMessage.damager.transform.position).normalized;
+        hitBackDir = Vector3.Lerp(hitBackDir, this.transform.position, Time.deltaTime);
+        mover.MoveBack(hitBackDir);
         return true;
-
-        // EffectManager.Instance.PlayHitEffect(damageMessage.hitPoint, damageMessage.hitNormal, transform, EffectManager.EffectType.Flesh);
-        // playerAudioPlayer.PlayOneShot(hitClip);
-
-        // Vector3 hitBackDir = (damageMessage.damager.transform.position - this.transform.position).normalized;
-        // hitBackDir = Vector3.Lerp(hitBackDir, Vector3.zero, Time.deltaTime);
-        // mover.MoveBack(hitBackDir);
-
-        // LivingEntity의 OnDamage() 실행(데미지 적용)
     }
 
     public override void Die()

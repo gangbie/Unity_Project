@@ -9,11 +9,14 @@ public class EnemySpawner : MonoBehaviour
     private float damageMax = 20f; // 최대 공격력
     private float damageMin = 10f; // 최소 공격력
     public Enemy enemyPrefab; // 생성할 적 AI
+    public AidKit aidKitPrefab;
+    public Portal portalPrefab;
 
     private float healthMax = 110f; // 최대 체력
     private float healthMin = 100f; // 최소 체력
 
     [SerializeField] Transform[] spawnPoints; // 적 AI를 소환할 위치들
+    [SerializeField] Transform portalPoint;
 
     public float speedMax = 7f; // 최대 속도
     public float speedMin = 3f; // 최소 속도
@@ -24,13 +27,13 @@ public class EnemySpawner : MonoBehaviour
     private void Awake()
     {
         wave = 1;
+        SpawnWave();
+        GameManager.data.UpdateEnemy(enemies.Count);
     }
 
     private void Update()
     {
         if (GameManager.data.isGameover) return;
-
-        if (enemies.Count <= 0) SpawnWave();
     }
 
     private void SpawnWave()
@@ -63,11 +66,27 @@ public class EnemySpawner : MonoBehaviour
         enemy.Setup(health, damage, speed, speed * 0.3f, skinColor);
 
         enemies.Add(enemy);
-
-        enemy.OnDeath += () => enemies.Remove(enemy);
-        // 사망한 적을 10 초 뒤에 파괴
-        enemy.OnDeath += () => Destroy(enemy.gameObject, 2.5f);
-        // 적 사망시 점수 상승
-        enemy.OnDeath += () => GameManager.data.UpdateScore(10);
+        
+        if (enemy.health > healthMax - 3)
+        {
+            enemy.OnDeath += () => enemies.Remove(enemy);
+            // 사망한 적을 10 초 뒤에 파괴
+            enemy.OnDeath += () => Destroy(enemy.gameObject, 2.5f);
+            enemy.OnDeath += () => Instantiate(aidKitPrefab, enemy.transform.position, enemy.transform.rotation);
+            // 적 사망시 점수 상승
+            enemy.OnDeath += () => GameManager.data.UpdateScore(10);
+            enemy.OnDeath += () => GameManager.data.UpdateEnemy(enemies.Count);
+            enemy.OnDeath += () => { if (enemies.Count <= 0) Instantiate(portalPrefab, portalPoint.position, portalPoint.rotation); };
+        }
+        else
+        {
+            enemy.OnDeath += () => enemies.Remove(enemy);
+            // 사망한 적을 10 초 뒤에 파괴
+            enemy.OnDeath += () => Destroy(enemy.gameObject, 2.5f);
+            // 적 사망시 점수 상승
+            enemy.OnDeath += () => GameManager.data.UpdateScore(10);
+            enemy.OnDeath += () => GameManager.data.UpdateEnemy(enemies.Count);
+            enemy.OnDeath += () => { if (enemies.Count <= 0) Instantiate(portalPrefab, portalPoint.position, portalPoint.rotation); };
+        }
     }
 }

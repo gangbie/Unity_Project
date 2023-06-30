@@ -47,7 +47,11 @@ public class LivingEntity : MonoBehaviour, IHittable
         // lastDamagedTime = Time.time;
         health -= damageMessage.amount;
 
-        if (health <= 0) Die();
+        if (health <= 0)
+        {
+            health = 0;
+            Die();
+        }
 
         return true;
     }
@@ -57,6 +61,8 @@ public class LivingEntity : MonoBehaviour, IHittable
         if (dead) return;
 
         health += newHealth;
+        if (health > 100) { health = 100; }
+        GameManager.data.UpdateHp(health);
     }
 
     public virtual void Die()

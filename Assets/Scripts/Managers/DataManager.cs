@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class DataManager : MonoBehaviour
 {
+    private EnemySpawner enemySpawner;
     private GameSceneFlow gameSceneFlow;
     public PlayerHealth player;
     private Gun gun;
@@ -14,6 +15,7 @@ public class DataManager : MonoBehaviour
     private int life;
     private int bullet;
     private int score;
+    private int enemy;
 
     private void Awake()
     {
@@ -39,6 +41,8 @@ public class DataManager : MonoBehaviour
     public UnityAction OnChangeBullet;
     public int Score { get { return score; } private set { score = value; OnChangeScore?.Invoke(); } }
     public UnityAction OnChangeScore;
+    public int Enemy { get { return enemy; } private set { enemy = value; OnChangeEnemy?.Invoke(); } }
+    public UnityAction OnChangeEnemy;
 
     public void UpdateScore(int newScore)
     {
@@ -66,6 +70,12 @@ public class DataManager : MonoBehaviour
     {
         if (!isGameover)
             Bullet = bullet;
+    }
+
+    public void UpdateEnemy(int enemy)
+    {
+        if (!isGameover)
+            Enemy = enemy;
     }
 
     // 게임 오버 처리

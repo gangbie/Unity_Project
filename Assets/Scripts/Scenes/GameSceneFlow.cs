@@ -5,21 +5,16 @@ using UnityEngine.Animations.Rigging;
 
 public class GameSceneFlow : MonoBehaviour
 {
-    // public GameObject player;
     [SerializeField] PlayerHealth player;
-    // [SerializeField] Gun gun;
     [SerializeField] Transform playerSpawnPosition;
     [SerializeField] Rig rig;
 
     private PlayerMover mover;
-    // private PlayerShooter shooter;
     public bool isPlayerDead { get; private set; } // dead ป๓ลย
-    // public bool isGameover = GameManager.data.isGameover;
 
     private void Awake()
     {
         mover = player.GetComponentInChildren<PlayerMover>();
-        // shooter = player.GetComponentInChildren<PlayerShooter>();
     }
 
     public void Rebirth()
