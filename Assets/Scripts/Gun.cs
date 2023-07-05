@@ -2,26 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gun : MonoBehaviour
+public abstract class Gun : MonoBehaviour                                   //
 {
-    [SerializeField] PlayerShooter shooter;
-    [SerializeField] ParticleSystem hitEffectMetal;
-    [SerializeField] ParticleSystem hitEffectHuman;
-    [SerializeField] ParticleSystem muzzleEffect;
-    [SerializeField] TrailRenderer bulletTrail;
-    [SerializeField] float bulletSpeed;
-    [SerializeField] float maxDistance;
-    [SerializeField] int damage;
+    protected GunData data;
 
+    public PlayerShooter shooter;
+
+    private string name;
+    
     public LayerMask enemyLayer;
     public int bulletCapacity = 30;
     public int bulletRemain;
     public int bulletUsed;
+
+    public string info;                                                     //
+    public float bulletSpeed;                                               //
+    public float maxDistance;                                               //
+    public int damage;                                                      //
+    public ParticleSystem hitEffectMetal;
+    public ParticleSystem hitEffectHuman;
+    public ParticleSystem muzzleEffect;
+    public TrailRenderer bulletTrail;
+
+    protected virtual void Awake()
+    {
+        shooter = GetComponentInParent<PlayerShooter>();
+        
+        // hitEffectMetal = GameManager.Resource.Load<>
+    }
+
     private void OnEnable()
     {
         GameManager.data.UpdateBullet(bulletCapacity);
     }
-    public void Fire()
+
+    public abstract void InitSetting();
+
+    public virtual void Fire()                                              //
     {
         muzzleEffect.Play();
         bulletUsed++;
@@ -75,23 +92,13 @@ public class Gun : MonoBehaviour
             hitPosition = Camera.main.transform.position + Camera.main.transform.forward * maxDistance;
         }
 
-
-            // LivingEntity hittable = hit.transform.GetComponent<LivingEntity>();
-        
-
         StartCoroutine(TrailRoutine(muzzleEffect.transform.position, hitPosition));
 
-        // hittable?.Hit(hit, damage);
     }
-    //    else
-    //    {
-    //        StartCoroutine(TrailRoutine(muzzleEffect.transform.position, Camera.main.transform.forward * maxDistance));
-    //    }
-    //}
 
     IEnumerator ReleaseRoutine(GameObject effect)
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
         GameManager.Resource.Destroy(effect);
     }
 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine.Animations.Rigging;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Progress;
 
 public class PlayerShooter : MonoBehaviour
 {
-    [SerializeField] Gun gun;
+    [SerializeField] public Gun gun;
     [SerializeField] float reloadTime;
     [SerializeField] Rig aimRig;
     [SerializeField] WeaponHolder weaponHolder;
@@ -20,7 +21,6 @@ public class PlayerShooter : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         gun = GetComponentInChildren<Gun>();
-        //gameSceneFlow = GetComponent<GameSceneFlow>();
         player = gameObject.GetComponent<PlayerHealth>();
     }
 
@@ -66,5 +66,21 @@ public class PlayerShooter : MonoBehaviour
             return;
 
         Fire();
+    }
+    public void Get(Gun gun)
+    {
+        weaponHolder.items.Add(gun);
+        // GameManager.data.itemsSave.Add(gun);
+        gun.transform.parent = weaponHolder.transform;
+        // GameManager.data.UpdateGunCount(weaponHolder.items.Count);
+    }
+
+    public void SwapGun(Gun changeGun)
+    {
+        weaponHolder.Swap(changeGun);
+        gun = changeGun;
+        GameManager.data.UpdateGunInfo(changeGun.name);
+        // gun.gameObject.SetActive(true);
+        GameManager.UI.ClosePopUpUI();
     }
 }

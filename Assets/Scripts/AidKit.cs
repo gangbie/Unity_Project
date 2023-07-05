@@ -6,7 +6,7 @@ public class AidKit : MonoBehaviour
 {
     private GameObject player;
     private PlayerHealth playerHealth;
-    public LayerMask targetMask;
+    public LayerMask playerMask;
 
     private Collider col;
 
@@ -19,8 +19,12 @@ public class AidKit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Heal();
-        Destroy(gameObject);
+        if (((1 << other.transform.gameObject.layer) & playerMask) != 0)
+        {
+            Heal();
+            Destroy(gameObject);
+        }
+        
     }
 
     private void Heal()

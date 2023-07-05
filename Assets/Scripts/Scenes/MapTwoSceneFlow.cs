@@ -3,18 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
-public class GameSceneFlow : MonoBehaviour
+public class MapTwoSceneFlow : MonoBehaviour
 {
-    [SerializeField] public PlayerHealth player;
-    [SerializeField] Transform playerSpawnPosition;
-    [SerializeField] public Rig rig;
+    // public GameObject player;
 
-    private PlayerMover mover;
+    [SerializeField] private Map2Scene map2Scene;
+    [SerializeField] Transform playerSpawnPosition;
+    
+    public PlayerHealth player;
+    public PlayerMover mover;
+    public Rig rig;
+
     public bool isPlayerDead { get; private set; } // dead ป๓ลย
 
     private void Awake()
     {
-        mover = player.gameObject.GetComponent<PlayerMover>();
+        // player = map2Scene.playerPrefab;
+        // player = map2Scene.playerHealth;
+        // mover = player.gameObject.GetComponent<PlayerMover>();
+        // rig = player.gameObject.GetComponent<Rig>();
     }
 
     public void Rebirth()

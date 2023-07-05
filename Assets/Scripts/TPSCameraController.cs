@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class TPSCameraController : MonoBehaviour
 {
     [SerializeField] Transform cameraRoot;
-    [SerializeField] Transform aimTarget;
+    [SerializeField] public Transform aimTarget;
     [SerializeField] float mouseSensitivity;
     [SerializeField] float lookDistance;
 

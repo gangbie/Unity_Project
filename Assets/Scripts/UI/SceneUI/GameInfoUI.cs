@@ -10,6 +10,7 @@ public class GameInfoUI : SceneUI
     [SerializeField] private TMP_Text ScoreCount;
     [SerializeField] private TMP_Text RemainBullet;
     [SerializeField] private TMP_Text RemainEnemy;
+    [SerializeField] private TMP_Text GunInfo;
 
     protected override void Awake()
     {
@@ -23,6 +24,8 @@ public class GameInfoUI : SceneUI
         GameManager.data.OnChangeScore += () => { ScoreCount.text = GameManager.data.Score.ToString(); };
         GameManager.data.OnChangeBullet += () => { RemainBullet.text = GameManager.data.Bullet.ToString(); };
         GameManager.data.OnChangeEnemy += () => { RemainEnemy.text = GameManager.data.Enemy.ToString(); };
+        GameManager.data.OnChangeGunInfo += () => { GunInfo.text = GameManager.data.GunInfo.ToString(); };
+        GameManager.data.UpdateGunInfo(GameManager.data.GunInfo);
 
         // texts["RemainHP"].text = GameManager.data.Hp.ToString();
         // LifeCount.text = GameManager.data.Life.ToString();

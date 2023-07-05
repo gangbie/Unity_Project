@@ -17,6 +17,19 @@ public class GamePopUpUI : PopUpUI
     }
     private void OnPause(InputValue value)
     {
-        OpenPausePopUpUI();
+        if (GameManager.UI.popUpStack.Count == 0)
+            OpenPausePopUpUI();
     }
+
+    public void OpenItemPopUpUI()
+    {
+        GameManager.UI.ShowPopUpUI<PopUpUI>("UI/ItemListPopUpUI");
+    }
+
+    private void OnItem(InputValue value)
+    {
+        if (GameManager.UI.popUpStack.Count == 0)
+            OpenItemPopUpUI();
+    }
+
 }

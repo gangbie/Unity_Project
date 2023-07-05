@@ -2,31 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour, IGettable
+public class Item : MonoBehaviour //, IGettable
 {
-    public Collider col;
+    private GameObject player;
+    private PlayerShooter shooter;
 
     private string name;
     private float price;
 
-    private List<Item> items;
+    // public List<Item> items = new List<Item>();
 
     private void Awake()
     {
-        col = GetComponent<Collider>();
-        items = new List<Item>();
+        player = GameObject.FindGameObjectWithTag("Player");
+        shooter = player.GetComponent<PlayerShooter>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    public virtual void OnTriggerEnter(Collider other)
     {
-        Get();
-        Destroy(this.gameObject);
+        // this.shooter.Get(this);
+        // Destroy(this.gameObject);
+        this.gameObject.SetActive(false);
     }
 
-    public void Get()
-    {
-        items.Add(this);
-    }
+    
 
     
 }

@@ -9,11 +9,10 @@ using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour
 {
     private EventSystem eventSystem;
-
     private Canvas popUpCanvas;
-    private Stack<PopUpUI> popUpStack;
+    public Stack<PopUpUI> popUpStack;
 
-    private Canvas windowCanvas;
+    // private Canvas windowCanvas;
 
     // private GameObject gameoverUI;
     // private GameObject crosshair;
@@ -35,9 +34,9 @@ public class UIManager : MonoBehaviour
         popUpCanvas.sortingOrder = 100;
         popUpStack = new Stack<PopUpUI>();
 
-        windowCanvas = GameManager.Resource.Instantiate<Canvas>("UI/Canvas");
-        windowCanvas.gameObject.name = "WindowCanvas";
-        windowCanvas.sortingOrder = 10;
+        // windowCanvas = GameManager.Resource.Instantiate<Canvas>("UI/Canvas");
+        // windowCanvas.gameObject.name = "WindowCanvas";
+        // windowCanvas.sortingOrder = 10;
     }
 
     public T ShowPopUpUI<T>(T popUpui) where T : PopUpUI
@@ -70,7 +69,6 @@ public class UIManager : MonoBehaviour
     {
         PopUpUI ui = popUpStack.Pop();
         GameManager.Pool.Release(ui.gameObject);
-
         if (popUpStack.Count > 0)
         {
             PopUpUI curUI = popUpStack.Peek();
@@ -83,27 +81,27 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void ShowWindowUI(WindowUI windowUI)
-    {
-        WindowUI ui = GameManager.Pool.GetUI(windowUI);
-        ui.transform.SetParent(windowCanvas.transform, false);
-    }
+    // public void ShowWindowUI(WindowUI windowUI)
+    // {
+    //     WindowUI ui = GameManager.Pool.GetUI(windowUI);
+    //     ui.transform.SetParent(windowCanvas.transform, false);
+    // }
+    // 
+    // public void ShowWindowUI(string path)
+    // {
+    //     WindowUI ui = GameManager.Resource.Load<WindowUI>(path);
+    //     ShowWindowUI(ui);
+    // }
 
-    public void ShowWindowUI(string path)
-    {
-        WindowUI ui = GameManager.Resource.Load<WindowUI>(path);
-        ShowWindowUI(ui);
-    }
-
-    public void SelectWindowUI(WindowUI windowUI)
-    {
-        windowUI.transform.SetAsLastSibling();
-    }
-
-    public void CloseWindowUI(WindowUI windowUI)
-    {
-        GameManager.Pool.Release(windowUI.gameObject);
-    }
+    // public void SelectWindowUI(WindowUI windowUI)
+    // {
+    //     windowUI.transform.SetAsLastSibling();
+    // }
+    // 
+    // public void CloseWindowUI(WindowUI windowUI)
+    // {
+    //     GameManager.Pool.Release(windowUI.gameObject);
+    // }
 
 
     // public void UpdateScoreText(int newScore)  // 'scoreText' 점수 UI 갱신

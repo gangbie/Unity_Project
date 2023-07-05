@@ -5,12 +5,15 @@ using UnityEngine.Pool;
 
 public class Map1Scene : BaseScene
 {
+    private void Awake()
+    {
+        GameManager.Instance.curStageNum = 1;
+    }
     protected override IEnumerator LoadingRoutine()
     {
         GameManager.UI.Init();
         GameManager.Pool.Init();
         GameManager.data.Init();
-
 
         progress = 0.0f;
         yield return new WaitForSecondsRealtime(1f);

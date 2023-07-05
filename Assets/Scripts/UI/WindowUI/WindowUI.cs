@@ -9,7 +9,7 @@ public class WindowUI : BaseUI, IDragHandler, IPointerDownHandler
     {
         base.Awake();
 
-        buttons["CloseButton"].onClick.AddListener(() => { GameManager.UI.CloseWindowUI(this); });
+        // buttons["CloseButton"].onClick.AddListener(() => { GameManager.UI.CloseWindowUI(this); });
     }
     public void OnDrag(PointerEventData eventData)
     {
@@ -18,6 +18,6 @@ public class WindowUI : BaseUI, IDragHandler, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        GameManager.UI.SelectWindowUI(this);
+        // GameManager.UI.SelectWindowUI(this);
     }
 }

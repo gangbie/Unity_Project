@@ -6,10 +6,12 @@ using UnityEngine.Events;
 
 public class DataManager : MonoBehaviour
 {
+    // private WeaponHolder weaponHolder;
     private EnemySpawner enemySpawner;
     private GameSceneFlow gameSceneFlow;
     public PlayerHealth player;
-    private Gun gun;
+    public int curGunNum;
+    // public List<Gun> itemsSave;
 
     private float hp;
     private int life;
@@ -17,8 +19,11 @@ public class DataManager : MonoBehaviour
     private int score;
     private int enemy;
 
+    private string gunInfo;
+
     private void Awake()
     {
+        // itemsSave = new List<Gun>();
         Init();
     }
 
@@ -33,6 +38,15 @@ public class DataManager : MonoBehaviour
 
     public bool isGameover { get; private set; } // 게임 오버 상태
 
+    // public string GunInfoDefault { get { return weaponHolder.items[0].name; } }
+    // public string GunInfoFamas 
+    // { get 
+    //     {
+    //         if (weaponHolder.items[1] == null)
+    //             return "EMPTY";
+    //         return weaponHolder.items[1].name; 
+    //     } 
+    // }
     public float Hp { get {  return hp; } private set { hp = value; OnChangeHp?.Invoke(); } }
     public UnityAction OnChangeHp;
     public int Life { get { return life; } private set { life = value; OnChangeLife?.Invoke(); } }
@@ -43,7 +57,8 @@ public class DataManager : MonoBehaviour
     public UnityAction OnChangeScore;
     public int Enemy { get { return enemy; } private set { enemy = value; OnChangeEnemy?.Invoke(); } }
     public UnityAction OnChangeEnemy;
-
+    public string GunInfo { get { return gunInfo; } private set { gunInfo = value; OnChangeGunInfo?.Invoke(); } }
+    public UnityAction OnChangeGunInfo;
     public void UpdateScore(int newScore)
     {
         // 게임 오버가 아닌 상태에서만 점수 증가 가능
@@ -51,6 +66,10 @@ public class DataManager : MonoBehaviour
         {
             // 점수 추가
             Score += newScore;
+            if(Score < 0)
+            {
+                Score = 0;
+            }
         }
     }
 
@@ -76,6 +95,12 @@ public class DataManager : MonoBehaviour
     {
         if (!isGameover)
             Enemy = enemy;
+    }
+
+    public void UpdateGunInfo(string gunInfo)
+    {
+        if (!isGameover)
+            GunInfo = gunInfo;
     }
 
     // 게임 오버 처리

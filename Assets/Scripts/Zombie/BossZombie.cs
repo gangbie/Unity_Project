@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-public class Enemy : LivingEntity
+public class BossZombie : Enemy
 {
     private GameObject player;
     private PlayerMover playerMover;
-    // [SerializeField] PlayerMover playerMover;
 
     [SerializeField] float runSpeed;
     [SerializeField, Range(0.01f, 2f)] float turnSmoothTime;
@@ -43,7 +40,7 @@ public class Enemy : LivingEntity
         Idle, Patrol, Trace, Attacking, Die
     }
 
-    StateMachine<State, Enemy> stateMachine;
+    StateMachine<State, BossZombie> stateMachine;
 
     private State state;
 
@@ -81,12 +78,12 @@ public class Enemy : LivingEntity
 
         attackDistance += agent.radius;
 
-        stateMachine = new StateMachine<State, Enemy>(this);
-        stateMachine.AddState(State.Idle,      new IdleState(this, stateMachine));
-        stateMachine.AddState(State.Patrol,    new PatrolState(this, stateMachine));
-        stateMachine.AddState(State.Trace,     new TraceState(this, stateMachine));
+        stateMachine = new StateMachine<State, BossZombie>(this);
+        stateMachine.AddState(State.Idle, new IdleState(this, stateMachine));
+        stateMachine.AddState(State.Patrol, new PatrolState(this, stateMachine));
+        stateMachine.AddState(State.Trace, new TraceState(this, stateMachine));
         stateMachine.AddState(State.Attacking, new AttackingState(this, stateMachine));
-        stateMachine.AddState(State.Die,       new DieState(this, stateMachine));
+        stateMachine.AddState(State.Die, new DieState(this, stateMachine));
 
     }
 
@@ -177,29 +174,16 @@ public class Enemy : LivingEntity
     {
         while (!dead)
         {
-            if (playerMover.isWalking)
-            {
-                viewDistance = 5;
-            }
-            else
-            {
-                viewDistance = 10;
-            }
+            viewDistance = 20;
             var colliders = Physics.OverlapSphere(eyeTransform.position, viewDistance, targetMask);
             foreach (var collider in colliders)
             {
-                // if (!IsTargetOnSight(collider.transform)) continue;
 
                 var livingEntity = collider.GetComponent<LivingEntity>();
 
-                // LivingEntity 컴포넌트가 존재하며, 해당 LivingEntity가 살아있다면,
                 if (livingEntity != null && !livingEntity.dead)
                 {
-                    // 추적 대상을 해당 LivingEntity로 설정
                     targetEntity = livingEntity;
-                    // Debug.Log("AI코루틴 돌던중 타겟 찾음");
-                    // Debug.Log(hasTarget);
-                    // for문 루프 즉시 정지
                     break;
                 }
             }
@@ -211,7 +195,6 @@ public class Enemy : LivingEntity
         }
     }
 
-    // 데미지를 입었을때 실행할 처리
     public override bool ApplyDamage(DamageMessage damageMessage)
     {
         if (!base.ApplyDamage(damageMessage)) return false;
@@ -221,8 +204,6 @@ public class Enemy : LivingEntity
             targetEntity = damageMessage.damager.GetComponent<LivingEntity>();
         }
 
-        // EffectManager.Instance.PlayHitEffect(damageMessage.hitPoint, damageMessage.hitNormal, transform, EffectManager.EffectType.Flesh);
-        // audioPlayer.PlayOneShot(hitClip);
         OnChangeHP?.Invoke(health);
         return true;
     }
@@ -238,7 +219,7 @@ public class Enemy : LivingEntity
     {
         if (hasTarget)
         {
-            stateMachine.ChangeState(State.Attacking);
+            stateMachine.ChangeState(State.Trace);  // trace 해보자
         }
         else
         {
@@ -248,30 +229,6 @@ public class Enemy : LivingEntity
         agent.isStopped = false;
     }
 
-    private bool IsTargetOnSight(Transform target)
-    {
-        RaycastHit hit;
-
-        var direction = target.position - eyeTransform.position;
-
-        direction.y = eyeTransform.forward.y;
-
-        if (Vector3.Angle(direction, eyeTransform.forward) > fieldOfView * 0.5f)
-        {
-            return false;
-        }
-
-        direction = target.position - eyeTransform.position;
-
-        if (Physics.Raycast(eyeTransform.position, direction, out hit, viewDistance, targetMask))
-        {
-            if (hit.transform == target) return true;
-        }
-
-        return false;
-    }
-
-    // 사망 처리
     public override void Die()
     {
         base.Die();
@@ -283,20 +240,18 @@ public class Enemy : LivingEntity
     {
         anim.applyRootMotion = true;
         anim.SetTrigger("Die");
-        //1 GameManager.data.UpdateScore(100);
 
         yield return new WaitForSeconds(4);
-        //1 Destroy(gameObject);
     }
 
-    private abstract class EnemyState : StateBase<State, Enemy>
+    private abstract class EnemyState : StateBase<State, BossZombie>
     {
         protected GameObject gameObject => owner.gameObject;
         protected Transform transform => owner.transform;
         protected NavMeshAgent agent => owner.agent;
         protected Animator anim => owner.anim;
 
-        protected EnemyState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        protected EnemyState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }
     }
@@ -305,7 +260,7 @@ public class Enemy : LivingEntity
     {
         private NavMeshAgent agent;
         private bool hasTarget;
-        public IdleState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        public IdleState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
@@ -350,7 +305,7 @@ public class Enemy : LivingEntity
     {
         private NavMeshAgent agent;
         private int routineNum;
-        public PatrolState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        public PatrolState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
@@ -369,7 +324,7 @@ public class Enemy : LivingEntity
         }
         public override void Update()
         {
-            
+
         }
 
         public override void Transition()
@@ -410,7 +365,7 @@ public class Enemy : LivingEntity
     {
         private NavMeshAgent agent;
         private float attackDistance;
-        public TraceState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        public TraceState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
@@ -427,7 +382,7 @@ public class Enemy : LivingEntity
         }
         public override void Update()
         {
-            
+
         }
 
         public override void Transition()
@@ -465,7 +420,7 @@ public class Enemy : LivingEntity
         private NavMeshAgent agent;
         private Animator anim;
         private float attackDistance;
-        public AttackingState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        public AttackingState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
@@ -503,7 +458,7 @@ public class Enemy : LivingEntity
     private class DieState : EnemyState
     {
         // private NavMeshAgent agent;
-        public DieState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
+        public DieState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
@@ -522,5 +477,11 @@ public class Enemy : LivingEntity
         public override void Exit()
         {
         }
+    }
+
+    public override void Hit(GameObject sender, RaycastHit hit)
+    {
+        Vector3 dir = (transform.position - sender.transform.position).normalized;
+        agent.Move(0.3f * dir);
     }
 }

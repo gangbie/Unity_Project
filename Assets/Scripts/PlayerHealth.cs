@@ -7,7 +7,8 @@ using UnityEngine.Events;
 
 public class PlayerHealth : LivingEntity
 {
-    [SerializeField] GameSceneFlow gameSceneFlow;
+    [SerializeField] public GameSceneFlow gameSceneFlow;
+    [SerializeField] public MapTwoSceneFlow mapTwoSceneFlow;
     [SerializeField] Rig rig;
     private Animator anim;
     private PlayerMover mover;
@@ -63,6 +64,7 @@ public class PlayerHealth : LivingEntity
         mover.enabled = false;
         // shooter.enabled = false;
         // gun.enabled = false;
+        GameManager.data.UpdateScore(-30);
         StartCoroutine(DieRoutine());
     }
 
@@ -75,8 +77,14 @@ public class PlayerHealth : LivingEntity
 
         yield return new WaitForSeconds(4);
         gameObject.SetActive(false);
-        gameSceneFlow.PlayerDead();
-
+        if (GameManager.Instance.curStageNum == 1)
+        {
+            gameSceneFlow.PlayerDead();
+        }
+        else
+        {
+            mapTwoSceneFlow.PlayerDead();
+        }
         // GameManager.data.UpdateLife(GameManager.data.Life - 1);
         // if (GameManager.data.Life < 0)
         // {

@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Build.Content;
 using UnityEngine;
 
 public class Portal : MonoBehaviour
 {
     private GameObject player;
     public LayerMask targetMask;
+    public WeaponHolder weaponHolder;
 
     private Collider col;
 
@@ -13,12 +16,25 @@ public class Portal : MonoBehaviour
     {
         col = GetComponent<Collider>();
         player = GameObject.FindGameObjectWithTag("Player");
+        weaponHolder = player.GetComponentInChildren<WeaponHolder>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        GoToNextMap();
-        Destroy(gameObject);
+        if (GameManager.Instance.curStageNum == 1)
+        {
+            if (GameManager.data.GunInfo == "Default Gun")
+                GameManager.data.curGunNum = 0;
+            if (GameManager.data.GunInfo == "Famas Gun")
+                GameManager.data.curGunNum = 1;
+            GoToNextMap();
+            Destroy(gameObject);
+        }
+        else
+        {
+            GameManager.UI.ShowPopUpUI<PopUpUI>("UI/GameClearUI");
+        }
+        
     }
 
     private void GoToNextMap()

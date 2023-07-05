@@ -72,7 +72,7 @@ public class LivingEntity : MonoBehaviour, IHittable
         dead = true;
     }
 
-    public void Hit(GameObject sender, RaycastHit hit)
+    public virtual void Hit(GameObject sender, RaycastHit hit)
     {
         Vector3 dir = (transform.position - sender.transform.position).normalized;
         agent.Move(2f * dir);

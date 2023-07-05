@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     // public bool isPlayerDead { get; private set; } // dead 상태
     // public bool isGameover { get; private set; } // 게임 오버 상태
 
+    public int curStageNum;
+
     private static GameManager instance;
     private static PoolManager poolManager;
     private static ResourceManager resource;
