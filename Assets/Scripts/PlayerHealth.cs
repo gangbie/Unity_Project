@@ -21,8 +21,6 @@ public class PlayerHealth : LivingEntity
 
         anim = GetComponent<Animator>();
         mover = GetComponent<PlayerMover>();
-        // shooter = GetComponent<PlayerShooter>();
-        // gun = this.gameObject.GetComponentInChildren<Gun>();
     }
 
     protected override void OnEnable()
@@ -44,8 +42,6 @@ public class PlayerHealth : LivingEntity
     {
         if (!base.ApplyDamage(damageMessage)) return false;
 
-        // GameManager.UI.ShowPopUpUI<PopUpUI>("UI/PlayerDamagedEffect");
-
         GameManager.data.UpdateHp(health);
         OnDamaged.Invoke();
 
@@ -62,8 +58,6 @@ public class PlayerHealth : LivingEntity
         // LivingEntity의 Die() 실행(사망 적용)
         base.Die();
         mover.enabled = false;
-        // shooter.enabled = false;
-        // gun.enabled = false;
         GameManager.data.UpdateScore(-30);
         StartCoroutine(DieRoutine());
     }
@@ -85,29 +79,5 @@ public class PlayerHealth : LivingEntity
         {
             mapTwoSceneFlow.PlayerDead();
         }
-        // GameManager.data.UpdateLife(GameManager.data.Life - 1);
-        // if (GameManager.data.Life < 0)
-        // {
-        //     GameManager.data.EndGame();
-        // }
-        // else
-        // {
-        //     yield return new WaitForSeconds(4);
-        //     //Destroy(gameObject);
-        //     gameObject.SetActive(false);
-        //     Rebirth();
-        // }
-
     }
-
-    // public void Rebirth()
-    // {
-    //     // GameObject player = Instantiate(playerPrefab, playerSpawnPosition.position, playerSpawnPosition.rotation);
-    //     // virtualCamera.Follow = cameraRoot.transform;
-    // 
-    //     this.transform.position = playerSpawnPosition.position;
-    //     this.transform.rotation = playerSpawnPosition.rotation;
-    //     this.health = 100;
-    //     gameObject.SetActive(true);
-    // }
 }

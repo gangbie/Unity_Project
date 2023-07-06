@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
@@ -11,18 +12,12 @@ public class UIManager : MonoBehaviour
     private EventSystem eventSystem;
     private Canvas popUpCanvas;
     public Stack<PopUpUI> popUpStack;
-
-    // private Canvas windowCanvas;
-
-    // private GameObject gameoverUI;
-    // private GameObject crosshair;
-    
-
+    public bool isPopUpOpened;
     private void Awake()
     {
         eventSystem = GameManager.Resource.Instantiate<EventSystem>("UI/EventSystem");
         eventSystem.transform.parent = transform;
-
+        isPopUpOpened = false;
         Init();
 
     }
@@ -52,7 +47,7 @@ public class UIManager : MonoBehaviour
         ui.transform.SetParent(popUpCanvas.transform, false);
 
         popUpStack.Push(ui);
-
+        isPopUpOpened = true;
         Time.timeScale = 0;
 
         return ui;
@@ -68,6 +63,7 @@ public class UIManager : MonoBehaviour
     public void ClosePopUpUI()
     {
         PopUpUI ui = popUpStack.Pop();
+        isPopUpOpened = false;
         GameManager.Pool.Release(ui.gameObject);
         if (popUpStack.Count > 0)
         {

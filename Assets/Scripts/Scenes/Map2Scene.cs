@@ -21,8 +21,7 @@ public class Map2Scene : BaseScene
     private void Awake()
     {
         GameObject player = Instantiate(playerPrefab, playerPosition.position, playerPosition.rotation);
-        FamasGun famasGun = Instantiate(famasGunPrefab);
-        famasGun.gameObject.SetActive(false);
+        
         
         cameraRoot = player.transform.Find("CameraRoot");
         virtualCamera.Follow = cameraRoot;
@@ -31,16 +30,25 @@ public class Map2Scene : BaseScene
         playerHealth.mapTwoSceneFlow = mapTwoSceneFlow;
 
         playerShooter = player.GetComponent<PlayerShooter>();
-        playerShooter.Get(famasGun);
         weaponHolder = player.GetComponentInChildren<WeaponHolder>();
         aimRig = player.GetComponentInChildren<Rig>();
         mapTwoSceneFlow.player = playerHealth;
         mapTwoSceneFlow.mover = player.GetComponent<PlayerMover>();
         mapTwoSceneFlow.rig = aimRig;
 
+        FamasGun famasGun = Instantiate(famasGunPrefab);
+        famasGun.name = "famas gun";
+        playerShooter.Get(famasGun);
+        famasGun.gameObject.SetActive(false);
+        famasGun.GetComponent<BoxCollider>().enabled = false;
+
         if (GameManager.data.curGunNum == 1)
         {
             playerShooter.SwapGun(famasGun);
+            // weaponHolder.gun.gameObject.SetActive(true);
+            //weaponHolder.items[1].gameObject.SetActive(true);
+
+            //famasGun.gameObject.SetActive(true);
         }
         // for (int i = 0; i < GameManager.data.itemsSave.Count; i++)
         // {

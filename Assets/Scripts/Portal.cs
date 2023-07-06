@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.Build.Content;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Portal : MonoBehaviour
 {
@@ -12,11 +13,18 @@ public class Portal : MonoBehaviour
 
     private Collider col;
 
+    public UnityEvent OnOpened;
+
     private void Awake()
     {
         col = GetComponent<Collider>();
         player = GameObject.FindGameObjectWithTag("Player");
         weaponHolder = player.GetComponentInChildren<WeaponHolder>();
+    }
+
+    private void OnEnable()
+    {
+        OnOpened?.Invoke();
     }
 
     private void OnTriggerEnter(Collider other)

@@ -33,6 +33,11 @@ public class Enemy : LivingEntity
 
     public UnityEvent<float> OnChangeHP;
 
+    public UnityEvent OnBreathed;
+    public UnityEvent OnRuned;
+    public UnityEvent OnApplyDamaged;
+    public UnityEvent OnDied;
+
     private RaycastHit[] hits = new RaycastHit[10];
     private List<LivingEntity> lastAttackedTargets = new List<LivingEntity>();
 
@@ -238,7 +243,7 @@ public class Enemy : LivingEntity
     {
         if (hasTarget)
         {
-            stateMachine.ChangeState(State.Attacking);  // trace 해보자
+            stateMachine.ChangeState(State.Trace);  // trace 해보자
         }
         else
         {
@@ -274,6 +279,7 @@ public class Enemy : LivingEntity
     // 사망 처리
     public override void Die()
     {
+        OnDied?.Invoke();
         base.Die();
         GetComponent<Collider>().enabled = false;
         agent.enabled = false;

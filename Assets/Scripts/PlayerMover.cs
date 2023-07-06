@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerMover : MonoBehaviour
@@ -18,6 +19,12 @@ public class PlayerMover : MonoBehaviour
     public bool isWalking;
     private bool isJumping;
 
+    Coroutine soundRoutine;
+    bool isSoundPlay;
+
+    public UnityEvent OnWalked;
+    public UnityEvent OnJumped;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -29,28 +36,46 @@ public class PlayerMover : MonoBehaviour
         Move();
         Jump();
     }
-
     private void Move()
     {
+        //StartCoroutine(MoveRoutine());
+
         if (moveDir.magnitude <= 0)     // 안 움직임
         {
             moveSpeed = Mathf.Lerp(moveSpeed, 0, 0.5f);
         }
         else if (isWalking)             // 움직이는데 걸음
         {
-            moveSpeed = Mathf.Lerp(moveSpeed, walkSpeed, 0.5f);
+            moveSpeed = walkSpeed; // Mathf.Lerp(moveSpeed, walkSpeed, 0.5f);
         }
         else                            // 움직이는데 뜀
         {
             moveSpeed = Mathf.Lerp(moveSpeed, runSpeed, 0.5f);
         }
-
+        if (!isSoundPlay)
+        {
+            StartCoroutine(MoveRoutine());
+            isSoundPlay = true;
+        }
         controller.Move(transform.forward * moveDir.z * moveSpeed * Time.deltaTime);
         controller.Move(transform.right * moveDir.x * moveSpeed * Time.deltaTime);
 
         anim.SetFloat("XSpeed", moveDir.x, 0.1f, Time.deltaTime);
         anim.SetFloat("YSpeed", moveDir.y, 0.1f, Time.deltaTime);
         anim.SetFloat("Speed", moveSpeed);
+
+        
+    }
+
+    private IEnumerator MoveRoutine()
+    {
+        if (moveSpeed > walkSpeed)
+        {
+            OnWalked?.Invoke();
+        }
+        yield return new WaitForSeconds(0.3f);
+        isSoundPlay = false;
+        yield break;
     }
 
     public void MoveBack(Vector3 dir)
@@ -95,6 +120,8 @@ public class PlayerMover : MonoBehaviour
             ySpeed = jumpSpeed;
         if (isJumping)
             return;
+
+        OnJumped?.Invoke();
 
         StartCoroutine(JumpRoutine());
     }

@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DefaultGun : Gun
 {
+    public UnityEvent OnFired;
     protected override void Awake()
     {
         base.Awake();
@@ -28,5 +30,6 @@ public class DefaultGun : Gun
     public override void Fire()
     {
         base.Fire();
+        OnFired?.Invoke();
     }
 }

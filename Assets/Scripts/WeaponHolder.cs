@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WeaponHolder : MonoBehaviour
 {
     [SerializeField] public Gun gun;
-
-    // private Item item;
 
     public List<Gun> items = new List<Gun>();
 
@@ -22,7 +21,7 @@ public class WeaponHolder : MonoBehaviour
         gun.transform.position = prevGun.transform.position;
         gun.transform.rotation = prevGun.transform.rotation;
         prevGun.gameObject.SetActive(false);
-        gun.gameObject.SetActive(true);
+        changeGun.gameObject.SetActive(true);
     }
 
 

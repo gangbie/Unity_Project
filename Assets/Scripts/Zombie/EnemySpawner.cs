@@ -73,7 +73,7 @@ public class EnemySpawner : MonoBehaviour
 
         enemies.Add(enemy);
 
-        if (enemy.health > healthMax - 3)
+        if (enemy.health > healthMax - 2.3)
         {
             enemy.OnDeath += () => enemies.Remove(enemy);
             // 사망한 적을 n초 뒤에 파괴

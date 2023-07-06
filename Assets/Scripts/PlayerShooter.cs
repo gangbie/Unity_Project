@@ -4,6 +4,7 @@ using UnityEngine.Animations.Rigging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEditor.Progress;
+using UnityEngine.Events;
 
 public class PlayerShooter : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class PlayerShooter : MonoBehaviour
 
     private Animator anim;
     private bool isReloading;
+
+    public UnityEvent OnReloaded;
 
     private void Awake()
     {
@@ -49,6 +52,7 @@ public class PlayerShooter : MonoBehaviour
     public void Reload()
     {
         StartCoroutine(ReloadingRoutine());
+        OnReloaded?.Invoke();
     }
 
     public void Fire()
@@ -65,6 +69,9 @@ public class PlayerShooter : MonoBehaviour
         if (player.deadCheckForShooter == true)
             return;
 
+        if (GameManager.UI.isPopUpOpened == true)
+            return;
+
         Fire();
     }
     public void Get(Gun gun)
@@ -79,8 +86,9 @@ public class PlayerShooter : MonoBehaviour
     {
         weaponHolder.Swap(changeGun);
         gun = changeGun;
+        Reload();
         GameManager.data.UpdateGunInfo(changeGun.name);
-        // gun.gameObject.SetActive(true);
+        // changeGun.gameObject.SetActive(true);
         GameManager.UI.ClosePopUpUI();
     }
 }

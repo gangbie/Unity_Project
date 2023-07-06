@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class FamasGun : Gun
 {
     private GameObject player;
-
+    
     public LayerMask playerMask;
-
+    
+    public UnityEvent OnFired;
+    public UnityEvent OnEntered;
     protected override void Awake()
     {
         // base.Awake();
@@ -32,6 +35,7 @@ public class FamasGun : Gun
     {
         if (((1 << other.gameObject.layer) & playerMask) != 0)
         {
+            OnEntered?.Invoke();
             shooter.Get(this);
             this.name = info;
             this.gameObject.SetActive(false);
@@ -42,5 +46,6 @@ public class FamasGun : Gun
     public override void Fire()
     {
         base.Fire();
+        OnFired?.Invoke();
     }
 }
