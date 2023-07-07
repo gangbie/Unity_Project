@@ -2,15 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour //, IGettable
+public class Item : MonoBehaviour
 {
     private GameObject player;
     private PlayerShooter shooter;
 
     private string name;
     private float price;
-
-    // public List<Item> items = new List<Item>();
 
     private void Awake()
     {
@@ -20,12 +18,6 @@ public class Item : MonoBehaviour //, IGettable
 
     public virtual void OnTriggerEnter(Collider other)
     {
-        // this.shooter.Get(this);
-        // Destroy(this.gameObject);
         this.gameObject.SetActive(false);
     }
-
-    
-
-    
 }

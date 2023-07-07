@@ -20,19 +20,13 @@ public class ItemListPopUpUI : PopUpUI
         player = GameObject.FindGameObjectWithTag("Player");
         weaponHolder = player.GetComponentInChildren<WeaponHolder>();
         shooter = player.GetComponent<PlayerShooter>();
+
         buttons["Gun1Button"].onClick.AddListener(() => { shooter.SwapGun(weaponHolder.items[0]); });
         buttons["Gun2Button"].onClick.AddListener(() => { shooter.SwapGun(weaponHolder.items[1]); });
-        
+        buttons["Button1"].onClick.AddListener(() => { GameManager.UI.ClosePopUpUI(); });
+        buttons["Button2"].onClick.AddListener(() => { GameManager.UI.ClosePopUpUI(); });
+        buttons["Button3"].onClick.AddListener(() => { GameManager.UI.ClosePopUpUI(); });
     }
-
-    // public void SwapGun(Gun gun)
-    // {
-    //     weaponHolder.Swap(gun);
-    //     shooter.gun = gun;
-    //     GameManager.data.UpdateGunInfo(gun.name);
-    //     // gun.gameObject.SetActive(true);
-    //     GameManager.UI.ClosePopUpUI();
-    // }
 
     private void OnEnable()
     {
@@ -45,9 +39,5 @@ public class ItemListPopUpUI : PopUpUI
         {
             texts["Gun2Text"].text = weaponHolder.items[1].name.ToString();
         }
-        // GameManager.data.OnChangeGunCount += () => { texts["Gun1Text"].text = GameManager.data.GunInfoDefault.ToString(); };
-        // GameManager.data.OnChangeGunCount += () => { texts["Gun2Text"].text = GameManager.data.GunInfoFamas.ToString(); };
     }
-
-
 }

@@ -6,15 +6,13 @@ using UnityEngine.Events;
 
 public class DataManager : MonoBehaviour
 {
-    // private WeaponHolder weaponHolder;
     private EnemySpawner enemySpawner;
     private GameSceneFlow gameSceneFlow;
     public PlayerHealth player;
     public int curGunNum;
-    // public List<Gun> itemsSave;
 
     private float hp;
-    private int life;
+    public int life;
     private int bullet;
     private int score;
     private int enemy;
@@ -23,14 +21,14 @@ public class DataManager : MonoBehaviour
 
     private void Awake()
     {
-        // itemsSave = new List<Gun>();
+        life = 3;
         Init();
     }
 
     public void Init()
     {
         isGameover = false;
-        Life = 3;
+        UpdateLife(life);
         UpdateScore(0);
         UpdateHp(100);
         UpdateBullet(30);
@@ -38,15 +36,6 @@ public class DataManager : MonoBehaviour
 
     public bool isGameover { get; private set; } // 게임 오버 상태
 
-    // public string GunInfoDefault { get { return weaponHolder.items[0].name; } }
-    // public string GunInfoFamas 
-    // { get 
-    //     {
-    //         if (weaponHolder.items[1] == null)
-    //             return "EMPTY";
-    //         return weaponHolder.items[1].name; 
-    //     } 
-    // }
     public float Hp { get {  return hp; } private set { hp = value; OnChangeHp?.Invoke(); } }
     public UnityAction OnChangeHp;
     public int Life { get { return life; } private set { life = value; OnChangeLife?.Invoke(); } }

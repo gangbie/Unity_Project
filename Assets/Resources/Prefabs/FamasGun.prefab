@@ -10153,6 +10153,7 @@ MonoBehaviour:
   playerMask:
     serializedVersion: 2
     m_Bits: 8
+  enterSound: {fileID: 7294395605331031215}
   OnFired:
     m_PersistentCalls:
       m_Calls:
@@ -10171,9 +10172,9 @@ MonoBehaviour:
   OnEntered:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7294395605331031215}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: Play
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10302,7 +10303,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: a2ae1b4762920f046b2f9fac3dc835fd, type: 3}
+  m_audioClip: {fileID: 8300000, guid: a1752d206b068634fbda3d47fc05b06c, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -10310,7 +10311,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 97
+  Priority: 128
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500

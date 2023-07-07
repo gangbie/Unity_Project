@@ -44,19 +44,19 @@ public class EnemySpawner : MonoBehaviour
     {
         wave++;
 
-        var spawnCount = Mathf.RoundToInt(wave * 10f);
+        int spawnCount = Mathf.RoundToInt(wave * 10f);
 
         CreateBossEnemy(1f);
-        for (var i = 0; i < spawnCount; i++)
+        for (int i = 0; i < spawnCount; i++)
         {
             // 적의 세기를 0%에서 100% 사이에서 랜덤 결정
             var enemyIntensity = Random.Range(0f, 1f);
             // 적 생성 처리 실행
-            CreateEnemy(enemyIntensity);
+            CreateEnemy(enemyIntensity, i);
         }
     }
 
-    private void CreateEnemy(float intensity)
+    private void CreateEnemy(float intensity, int point)
     {
         var health = Mathf.Lerp(healthMin, healthMax, intensity);
         var damage = Mathf.Lerp(damageMin, damageMax, intensity);
@@ -64,7 +64,7 @@ public class EnemySpawner : MonoBehaviour
 
         var skinColor = Color.Lerp(Color.white, strongEnemyColor, intensity);
 
-        var spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+        var spawnPoint = spawnPoints[point];
 
         var enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
         
@@ -73,7 +73,7 @@ public class EnemySpawner : MonoBehaviour
 
         enemies.Add(enemy);
 
-        if (enemy.health > healthMax - 2.3)
+        if (enemy.health > healthMax - 2)
         {
             enemy.OnDeath += () => enemies.Remove(enemy);
             // 사망한 적을 n초 뒤에 파괴
@@ -98,7 +98,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void CreateBossEnemy(float intensity)
     {
-        var health = 300;
+        var health = 300 * GameManager.Instance.curStageNum;
         var damage = 30;
         var speed = 10;
 

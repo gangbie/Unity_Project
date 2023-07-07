@@ -6,7 +6,6 @@ using UnityEngine.Pool;
 
 public class Map1Scene : BaseScene
 {
-    // public UnityEvent OnMapStarted;
     private void Awake()
     {
         GameManager.Instance.curStageNum = 1;

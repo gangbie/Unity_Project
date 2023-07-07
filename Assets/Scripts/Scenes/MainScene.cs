@@ -1,9 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MainScene : BaseScene
 {
+    public UnityEvent OnMainSceneEntered;
+    public UnityEvent OnMainSceneExited;
+    private void OnEnable()
+    {
+        OnMainSceneEntered?.Invoke();
+    }
+
+    private void OnDisable()
+    {
+        OnMainSceneExited?.Invoke();
+    }
     public void StartButton()
     {
         Debug.Log("Start button clicked");
@@ -16,7 +28,6 @@ public class MainScene : BaseScene
         GameManager.Pool.Init();
         UnityEngine.Cursor.lockState = CursorLockMode.None;
 
-        // yield return null;
         progress = 0.6f;
         yield return new WaitForSecondsRealtime(1f);
         progress = 0.8f;

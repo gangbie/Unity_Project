@@ -16,7 +16,6 @@ public class DamagedEffect : MonoBehaviour
     private void Awake()
     {
         image = GetComponent<Image>();
-        // image.enabled = false;
         originalColor = image.color;
     }
 
@@ -39,7 +38,6 @@ public class DamagedEffect : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         image.color = originalColor;
-        // image.enabled = false;
     }
 
     private void HealEffect()
@@ -55,6 +53,5 @@ public class DamagedEffect : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
 
         image.color = originalColor;
-        // image.enabled = false;
     }
 }

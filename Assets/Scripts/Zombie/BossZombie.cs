@@ -30,6 +30,9 @@ public class BossZombie : Enemy
 
     public UnityEvent<float> OnChangeHP;
 
+    public UnityEvent OnAttacked;
+    public UnityEvent OnDied;
+
     private RaycastHit[] hits = new RaycastHit[10];
     private List<LivingEntity> lastAttackedTargets = new List<LivingEntity>();
 
@@ -158,7 +161,7 @@ public class BossZombie : Enemy
                     {
                         message.hitPoint = hits[i].point;
                     }
-
+                    OnAttacked?.Invoke();
                     message.hitNormal = hits[i].normal;
 
                     attackTargetEntity.ApplyDamage(message);
@@ -219,7 +222,7 @@ public class BossZombie : Enemy
     {
         if (hasTarget)
         {
-            stateMachine.ChangeState(State.Trace);  // trace 해보자
+            stateMachine.ChangeState(State.Trace);
         }
         else
         {
@@ -231,6 +234,7 @@ public class BossZombie : Enemy
 
     public override void Die()
     {
+        OnDied?.Invoke();
         base.Die();
         GetComponent<Collider>().enabled = false;
         agent.enabled = false;
@@ -269,9 +273,6 @@ public class BossZombie : Enemy
         }
         public override void Enter()
         {
-            // Debug.Log("IdleState Enter");
-            // Debug.Log(owner.hasTarget);
-            agent.isStopped = true;
             agent.speed = 0;
             idleRoutine = owner.StartCoroutine(IdleRoutine());
         }
@@ -289,14 +290,12 @@ public class BossZombie : Enemy
         public override void Exit()
         {
             owner.StopCoroutine(idleRoutine);
-            // Debug.Log("IdleState Exit");
         }
 
         Coroutine idleRoutine;
         private IEnumerator IdleRoutine()
         {
             yield return new WaitForSeconds(3);
-            agent.isStopped = false;
             stateMachine.ChangeState(State.Patrol);
         }
     }
@@ -316,8 +315,6 @@ public class BossZombie : Enemy
         {
             routineNum = 0;
             agent.stoppingDistance = 0;
-            // Debug.Log("PatrolState Enter");
-            // Debug.Log(owner.hasTarget);
             agent.speed = owner.patrolSpeed;
             agent.SetDestination(transform.position);
             patrolRoutine = owner.StartCoroutine(PatrolRoutine());
@@ -341,7 +338,6 @@ public class BossZombie : Enemy
         public override void Exit()
         {
             owner.StopCoroutine(patrolRoutine);
-            // Debug.Log("PatrolState Exit");
         }
 
         Coroutine patrolRoutine;
@@ -352,7 +348,6 @@ public class BossZombie : Enemy
                 if (agent.remainingDistance <= 1f)
                 {
                     routineNum++;
-                    // Debug.Log(routineNum);
                     var patrolPosition = Utility.GetRandomPointOnNavMesh(transform.position, 7f, NavMesh.AllAreas);
                     agent.SetDestination(patrolPosition);
                 }
@@ -375,8 +370,6 @@ public class BossZombie : Enemy
         }
         public override void Enter()
         {
-            // Debug.Log("TraceState Enter");
-            // Debug.Log(owner.hasTarget);
             agent.speed = owner.runSpeed;
             traceRoutine = owner.StartCoroutine(TraceRoutine());
         }
@@ -398,7 +391,6 @@ public class BossZombie : Enemy
         }
         public override void Exit()
         {
-            // Debug.Log("TraceState Exit");
             owner.StopCoroutine(traceRoutine);
         }
 
@@ -407,7 +399,6 @@ public class BossZombie : Enemy
         {
             while (owner.hasTarget)
             {
-                // Debug.Log("Trace 코루틴 돌아감");
                 agent.SetDestination(owner.targetEntity.transform.position);
                 agent.stoppingDistance = attackDistance;
                 yield return new WaitForSeconds(0.1f);
@@ -431,8 +422,6 @@ public class BossZombie : Enemy
         }
         public override void Enter()
         {
-            // Debug.Log("AttakingState Enter");
-            // Debug.Log(owner.hasTarget);
             agent.isStopped = true;
             anim.SetTrigger("Attack");
         }
@@ -450,14 +439,11 @@ public class BossZombie : Enemy
         }
         public override void Exit()
         {
-            // Debug.Log("AttackingState Exit");
         }
     }
 
-    // 체력 0 되면 어차피 Die()의 base.Die() 실행되어 죽기 때문에 DieState는 필요 없을듯?
     private class DieState : EnemyState
     {
-        // private NavMeshAgent agent;
         public DieState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }

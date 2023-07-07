@@ -35,6 +35,7 @@ public class Portal : MonoBehaviour
                 GameManager.data.curGunNum = 0;
             if (GameManager.data.GunInfo == "Famas Gun")
                 GameManager.data.curGunNum = 1;
+            GameManager.data.life = GameManager.data.Life;
             GoToNextMap();
             Destroy(gameObject);
         }
@@ -48,5 +49,6 @@ public class Portal : MonoBehaviour
     private void GoToNextMap()
     {
         GameManager.Scene.LoadScene("Map2");
+        GameManager.Instance.curStageNum = 2;
     }
 }

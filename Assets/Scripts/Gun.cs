@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Gun : MonoBehaviour                                   //
+public abstract class Gun : MonoBehaviour                         
 {
     protected GunData data;
 
@@ -15,10 +15,10 @@ public abstract class Gun : MonoBehaviour                                   //
     public int bulletRemain;
     public int bulletUsed;
 
-    public string info;                                                     //
-    public float bulletSpeed;                                               //
-    public float maxDistance;                                               //
-    public int damage;                                                      //
+    public string info;                                           
+    public float bulletSpeed;                                     
+    public float maxDistance;                                     
+    public int damage;                                            
     public ParticleSystem hitEffectMetal;
     public ParticleSystem hitEffectHuman;
     public ParticleSystem muzzleEffect;
@@ -27,8 +27,6 @@ public abstract class Gun : MonoBehaviour                                   //
     protected virtual void Awake()
     {
         shooter = GetComponentInParent<PlayerShooter>();
-        
-        // hitEffectMetal = GameManager.Resource.Load<>
     }
 
     private void OnEnable()
@@ -36,9 +34,7 @@ public abstract class Gun : MonoBehaviour                                   //
         GameManager.data.UpdateBullet(bulletCapacity);
     }
 
-    public abstract void InitSetting();
-
-    public virtual void Fire()                                              //
+    public virtual void Fire()                                             
     {
         muzzleEffect.Play();
         bulletUsed++;
@@ -98,7 +94,7 @@ public abstract class Gun : MonoBehaviour                                   //
 
     IEnumerator ReleaseRoutine(GameObject effect)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.5f);
         GameManager.Resource.Destroy(effect);
     }
 

@@ -12,6 +12,7 @@ public class PlayerShooter : MonoBehaviour
     [SerializeField] float reloadTime;
     [SerializeField] Rig aimRig;
     [SerializeField] WeaponHolder weaponHolder;
+    [SerializeField] AudioSource enterSound;
 
     private PlayerHealth player;
 
@@ -76,10 +77,9 @@ public class PlayerShooter : MonoBehaviour
     }
     public void Get(Gun gun)
     {
+        EnterSoundPlay();
         weaponHolder.items.Add(gun);
-        // GameManager.data.itemsSave.Add(gun);
         gun.transform.parent = weaponHolder.transform;
-        // GameManager.data.UpdateGunCount(weaponHolder.items.Count);
     }
 
     public void SwapGun(Gun changeGun)
@@ -88,7 +88,11 @@ public class PlayerShooter : MonoBehaviour
         gun = changeGun;
         Reload();
         GameManager.data.UpdateGunInfo(changeGun.name);
-        // changeGun.gameObject.SetActive(true);
         GameManager.UI.ClosePopUpUI();
+    }
+
+    public void EnterSoundPlay()
+    {
+        enterSound.Play();
     }
 }

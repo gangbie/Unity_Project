@@ -22,11 +22,7 @@ public class DefaultGun : Gun
         this.name = info;
         GameManager.data.UpdateGunInfo(name);
     }
-    public override void InitSetting()
-    {
-        
-    }
-
+    
     public override void Fire()
     {
         base.Fire();

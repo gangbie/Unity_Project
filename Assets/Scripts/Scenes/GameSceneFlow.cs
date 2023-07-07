@@ -10,7 +10,7 @@ public class GameSceneFlow : MonoBehaviour
     [SerializeField] public Rig rig;
 
     private PlayerMover mover;
-    public bool isPlayerDead { get; private set; } // dead 상태
+    public bool isPlayerDead { get; private set; }
 
     private void Awake()
     {
@@ -45,12 +45,4 @@ public class GameSceneFlow : MonoBehaviour
             Rebirth();
         }
     }
-
-    // public void EndGame()
-    // {
-    //     // 게임 오버 상태를 참으로 변경
-    //     GameManager.data.isGameover = true;
-    //     // 게임 오버 UI를 활성화
-    //     GameManager.UI.ShowPopUpUI<PopUpUI>("UI/GameOverUI");
-    // }
 }

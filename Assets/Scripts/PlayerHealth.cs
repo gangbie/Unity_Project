@@ -64,7 +64,6 @@ public class PlayerHealth : LivingEntity
 
     private IEnumerator DieRoutine()
     {
-        // anim.applyRootMotion = true;
         anim.SetTrigger("Die");
         anim.SetLayerWeight(1, 0);
         rig.weight = 0;

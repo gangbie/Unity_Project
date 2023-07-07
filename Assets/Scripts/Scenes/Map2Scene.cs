@@ -20,8 +20,9 @@ public class Map2Scene : BaseScene
 
     private void Awake()
     {
+        GameManager.Instance.curStageNum = 2;
+
         GameObject player = Instantiate(playerPrefab, playerPosition.position, playerPosition.rotation);
-        
         
         cameraRoot = player.transform.Find("CameraRoot");
         virtualCamera.Follow = cameraRoot;
@@ -45,16 +46,7 @@ public class Map2Scene : BaseScene
         if (GameManager.data.curGunNum == 1)
         {
             playerShooter.SwapGun(famasGun);
-            // weaponHolder.gun.gameObject.SetActive(true);
-            //weaponHolder.items[1].gameObject.SetActive(true);
-
-            //famasGun.gameObject.SetActive(true);
         }
-        // for (int i = 0; i < GameManager.data.itemsSave.Count; i++)
-        // {
-        //     weaponHolder.items[i] = GameManager.data.itemsSave[i];
-        // }
-        // playerShooter.SwapGun(GameManager.data.curGun);
     }
     protected override IEnumerator LoadingRoutine()
     {
@@ -62,25 +54,16 @@ public class Map2Scene : BaseScene
         GameManager.Pool.Init();
         GameManager.data.Init();
 
-        GameManager.Instance.curStageNum = 2;
-
         progress = 0.0f;
         yield return new WaitForSecondsRealtime(1f);
-        
         progress = 0.2f;
         yield return new WaitForSecondsRealtime(1f);
-        
-        
         progress = 0.4f;
         yield return new WaitForSecondsRealtime(1f);
-        
         progress = 0.6f;
         yield return new WaitForSecondsRealtime(1f);
-        
         progress = 0.8f;
         yield return new WaitForSecondsRealtime(1f);
-
-        
         yield return new WaitForSecondsRealtime(1f);
         progress = 1.0f;
 

@@ -26,15 +26,5 @@ public class GameInfoUI : SceneUI
         GameManager.data.OnChangeEnemy += () => { RemainEnemy.text = GameManager.data.Enemy.ToString(); };
         GameManager.data.OnChangeGunInfo += () => { GunInfo.text = GameManager.data.GunInfo.ToString(); };
         GameManager.data.UpdateGunInfo(GameManager.data.GunInfo);
-
-        // texts["RemainHP"].text = GameManager.data.Hp.ToString();
-        // LifeCount.text = GameManager.data.Life.ToString();
-        // ScoreCount.text = GameManager.data.Score.ToString();
-        // RemainBullet.text = GameManager.data.Bullet.ToString();
-    }
-
-    private void Update()
-    {
-        
     }
 }

@@ -23,6 +23,4 @@ public class WeaponHolder : MonoBehaviour
         prevGun.gameObject.SetActive(false);
         changeGun.gameObject.SetActive(true);
     }
-
-
 }

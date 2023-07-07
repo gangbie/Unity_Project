@@ -8,9 +8,8 @@ public class FamasGun : Gun
     private GameObject player;
     
     public LayerMask playerMask;
-    
+
     public UnityEvent OnFired;
-    public UnityEvent OnEntered;
     protected override void Awake()
     {
         // base.Awake();
@@ -26,16 +25,10 @@ public class FamasGun : Gun
         muzzleEffect = GetComponentInChildren<ParticleSystem>();
         bulletTrail = data.guns[0].bulletTrail;
     }
-    public override void InitSetting()
-    {
-
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & playerMask) != 0)
         {
-            OnEntered?.Invoke();
             shooter.Get(this);
             this.name = info;
             this.gameObject.SetActive(false);

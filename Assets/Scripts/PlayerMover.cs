@@ -38,15 +38,13 @@ public class PlayerMover : MonoBehaviour
     }
     private void Move()
     {
-        //StartCoroutine(MoveRoutine());
-
         if (moveDir.magnitude <= 0)     // 안 움직임
         {
             moveSpeed = Mathf.Lerp(moveSpeed, 0, 0.5f);
         }
         else if (isWalking)             // 움직이는데 걸음
         {
-            moveSpeed = walkSpeed; // Mathf.Lerp(moveSpeed, walkSpeed, 0.5f);
+            moveSpeed = walkSpeed;      // Mathf.Lerp(moveSpeed, walkSpeed, 0.5f);
         }
         else                            // 움직이는데 뜀
         {
@@ -71,7 +69,8 @@ public class PlayerMover : MonoBehaviour
     {
         if (moveSpeed > walkSpeed)
         {
-            OnWalked?.Invoke();
+            if (!isJumping)
+                OnWalked?.Invoke();
         }
         yield return new WaitForSeconds(0.3f);
         isSoundPlay = false;
