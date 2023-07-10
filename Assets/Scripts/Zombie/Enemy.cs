@@ -65,8 +65,8 @@ public class Enemy : LivingEntity
 
         var leftRayRotation = Quaternion.AngleAxis(-fieldOfView * 0.5f, Vector3.up);
         var leftRayDirection = leftRayRotation * transform.forward;
-        Handles.color = Color.yellow;
-        Handles.DrawSolidArc(eyeTransform.position, Vector3.up, leftRayDirection, fieldOfView, viewDistance);
+        // Handles.color = Color.yellow;
+        // Handles.DrawSolidArc(eyeTransform.position, Vector3.up, leftRayDirection, fieldOfView, viewDistance);
     }
 
     protected override void Awake()
@@ -296,18 +296,18 @@ public class Enemy : LivingEntity
 
     private class IdleState : EnemyState
     {
-        private NavMeshAgent agent;
+        // private NavMeshAgent agent;
         private bool hasTarget;
         public IdleState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
         {
-            agent = owner.agent;
+            // agent = owner.agent;
         }
         public override void Enter()
         {
-            agent.speed = 0;
+            owner.agent.speed = 0;
             idleRoutine = owner.StartCoroutine(IdleRoutine());
         }
         public override void Update()
@@ -336,21 +336,21 @@ public class Enemy : LivingEntity
 
     private class PatrolState : EnemyState
     {
-        private NavMeshAgent agent;
+        // private NavMeshAgent agent;
         private int routineNum;
         public PatrolState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
         {
-            agent = owner.agent;
+            // agent = owner.agent;
         }
         public override void Enter()
         {
             routineNum = 0;
-            agent.stoppingDistance = 0;
-            agent.speed = owner.patrolSpeed;
-            agent.SetDestination(transform.position);
+            owner.agent.stoppingDistance = 0;
+            owner.agent.speed = owner.patrolSpeed;
+            owner.agent.SetDestination(transform.position);
             patrolRoutine = owner.StartCoroutine(PatrolRoutine());
         }
         public override void Update()
@@ -392,19 +392,19 @@ public class Enemy : LivingEntity
 
     private class TraceState : EnemyState
     {
-        private NavMeshAgent agent;
+        // private NavMeshAgent agent;
         private float attackDistance;
         public TraceState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
         {
-            agent = owner.agent;
+            // agent = owner.agent;
             attackDistance = owner.attackDistance;
         }
         public override void Enter()
         {
-            agent.speed = owner.runSpeed;
+            owner.agent.speed = owner.runSpeed;
             traceRoutine = owner.StartCoroutine(TraceRoutine());
         }
         public override void Update()
@@ -442,22 +442,22 @@ public class Enemy : LivingEntity
 
     private class AttackingState : EnemyState
     {
-        private NavMeshAgent agent;
-        private Animator anim;
+        // private NavMeshAgent agent;
+        // private Animator anim;
         private float attackDistance;
         public AttackingState(Enemy owner, StateMachine<State, Enemy> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
         {
-            agent = owner.agent;
-            anim = owner.anim;
+            // agent = owner.agent;
+            // anim = owner.anim;
             attackDistance = owner.attackDistance;
         }
         public override void Enter()
         {
-            agent.isStopped = true;
-            anim.SetTrigger("Attack");
+            owner.agent.isStopped = true;
+            owner.anim.SetTrigger("Attack");
         }
         public override void Update()
         {

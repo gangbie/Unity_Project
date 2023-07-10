@@ -10,6 +10,7 @@ public class DataManager : MonoBehaviour
     private GameSceneFlow gameSceneFlow;
     public PlayerHealth player;
     public int curGunNum;
+    public int curMouseSensitivity;
 
     private float hp;
     public int life;

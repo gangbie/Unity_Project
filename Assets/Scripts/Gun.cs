@@ -8,7 +8,7 @@ public abstract class Gun : MonoBehaviour
 
     public PlayerShooter shooter;
 
-    private string name;
+    // public string gunName;
     
     public LayerMask enemyLayer;
     public int bulletCapacity = 30;

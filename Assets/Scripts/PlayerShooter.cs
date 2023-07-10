@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Animations.Rigging;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.Progress;
+// using static UnityEditor.Progress;
 using UnityEngine.Events;
 
 public class PlayerShooter : MonoBehaviour

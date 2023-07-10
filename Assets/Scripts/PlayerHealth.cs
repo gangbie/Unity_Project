@@ -15,7 +15,7 @@ public class PlayerHealth : LivingEntity
     public UnityEvent OnDamaged;
     public UnityEvent OnHealed;
     public bool deadCheckForShooter;
-    private void Awake()
+    protected override void Awake()                                     // 
     {
         deadCheckForShooter = false; // 살아있음
 

@@ -20,18 +20,18 @@ public class BossZombie : Enemy
     private float attackDistance;
 
     [SerializeField] float fieldOfView;
-    [SerializeField] public float viewDistance;
+    // [SerializeField] public float viewDistance;
     [SerializeField] float patrolSpeed;
 
     [SerializeField] float walkRadius;
 
     private LivingEntity targetEntity;
-    public LayerMask targetMask;
+    // public LayerMask targetMask;
 
-    public UnityEvent<float> OnChangeHP;
+    // public UnityEvent<float> OnChangeHP;
 
-    public UnityEvent OnAttacked;
-    public UnityEvent OnDied;
+    // public UnityEvent OnAttacked;
+    // public UnityEvent OnDied;
 
     private RaycastHit[] hits = new RaycastHit[10];
     private List<LivingEntity> lastAttackedTargets = new List<LivingEntity>();
@@ -50,8 +50,8 @@ public class BossZombie : Enemy
     private NavMeshAgent agent;
     private Animator anim;
 
-    public Transform attackRoot;
-    public Transform eyeTransform;
+    // public Transform attackRoot;
+    // public Transform eyeTransform;
 
     private void OnDrawGizmosSelected()
     {
@@ -63,8 +63,8 @@ public class BossZombie : Enemy
 
         var leftRayRotation = Quaternion.AngleAxis(-fieldOfView * 0.5f, Vector3.up);
         var leftRayDirection = leftRayRotation * transform.forward;
-        Handles.color = Color.yellow;
-        Handles.DrawSolidArc(eyeTransform.position, Vector3.up, leftRayDirection, fieldOfView, viewDistance);
+        // Handles.color = Color.yellow;
+        // Handles.DrawSolidArc(eyeTransform.position, Vector3.up, leftRayDirection, fieldOfView, viewDistance);
     }
 
     protected override void Awake()
@@ -90,21 +90,21 @@ public class BossZombie : Enemy
 
     }
 
-    public void Setup(float health, float damage,
-        float runSpeed, float patrolSpeed, Color skinColor)
-    {
-        // 체력 설정
-        this.startingHealth = health;
-        this.health = health;
-
-        // 내비메쉬 에이전트의 이동 속도 설정
-        this.runSpeed = runSpeed;
-        this.patrolSpeed = patrolSpeed;
-
-        this.damage = damage;
-
-        agent.speed = patrolSpeed;
-    }
+    // public void Setup(float health, float damage,
+    //     float runSpeed, float patrolSpeed, Color skinColor)
+    // {
+    //     // 체력 설정
+    //     this.startingHealth = health;
+    //     this.health = health;
+    // 
+    //     // 내비메쉬 에이전트의 이동 속도 설정
+    //     this.runSpeed = runSpeed;
+    //     this.patrolSpeed = patrolSpeed;
+    // 
+    //     this.damage = damage;
+    // 
+    //     agent.speed = patrolSpeed;
+    // }
 
     private void Start()
     {
@@ -211,26 +211,26 @@ public class BossZombie : Enemy
         return true;
     }
 
-    public void EnableAttack()
-    {
-        state = State.Attacking;
-
-        lastAttackedTargets.Clear();
-    }
-
-    public void DisableAttack()
-    {
-        if (hasTarget)
-        {
-            stateMachine.ChangeState(State.Trace);
-        }
-        else
-        {
-            stateMachine.ChangeState(State.Patrol);
-        }
-
-        agent.isStopped = false;
-    }
+    // public void EnableAttack()
+    // {
+    //     state = State.Attacking;
+    // 
+    //     lastAttackedTargets.Clear();
+    // }
+    // 
+    // public void DisableAttack()
+    // {
+    //     if (hasTarget)
+    //     {
+    //         stateMachine.ChangeState(State.Trace);
+    //     }
+    //     else
+    //     {
+    //         stateMachine.ChangeState(State.Patrol);
+    //     }
+    // 
+    //     agent.isStopped = false;
+    // }
 
     public override void Die()
     {
@@ -262,18 +262,18 @@ public class BossZombie : Enemy
 
     private class IdleState : EnemyState
     {
-        private NavMeshAgent agent;
+        // private NavMeshAgent agent;
         private bool hasTarget;
         public IdleState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
         {
-            agent = owner.agent;
+            // agent = owner.agent;
         }
         public override void Enter()
         {
-            agent.speed = 0;
+            owner.agent.speed = 0;
             idleRoutine = owner.StartCoroutine(IdleRoutine());
         }
         public override void Update()
@@ -302,21 +302,21 @@ public class BossZombie : Enemy
 
     private class PatrolState : EnemyState
     {
-        private NavMeshAgent agent;
+        // private NavMeshAgent agent;
         private int routineNum;
         public PatrolState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
         {
-            agent = owner.agent;
+            // agent = owner.agent;
         }
         public override void Enter()
         {
             routineNum = 0;
-            agent.stoppingDistance = 0;
-            agent.speed = owner.patrolSpeed;
-            agent.SetDestination(transform.position);
+            owner.agent.stoppingDistance = 0;
+            owner.agent.speed = owner.patrolSpeed;
+            owner.agent.SetDestination(transform.position);
             patrolRoutine = owner.StartCoroutine(PatrolRoutine());
         }
         public override void Update()
@@ -358,19 +358,19 @@ public class BossZombie : Enemy
 
     private class TraceState : EnemyState
     {
-        private NavMeshAgent agent;
+        // private NavMeshAgent agent;
         private float attackDistance;
         public TraceState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
         {
-            agent = owner.agent;
+            // agent = owner.agent;
             attackDistance = owner.attackDistance;
         }
         public override void Enter()
         {
-            agent.speed = owner.runSpeed;
+            owner.agent.speed = owner.runSpeed;
             traceRoutine = owner.StartCoroutine(TraceRoutine());
         }
         public override void Update()
@@ -408,22 +408,22 @@ public class BossZombie : Enemy
 
     private class AttackingState : EnemyState
     {
-        private NavMeshAgent agent;
-        private Animator anim;
+        // private NavMeshAgent agent;
+        // private Animator anim;
         private float attackDistance;
         public AttackingState(BossZombie owner, StateMachine<State, BossZombie> stateMachine) : base(owner, stateMachine)
         {
         }
         public override void Setup()
         {
-            agent = owner.agent;
-            anim = owner.anim;
+            // agent = owner.agent;
+            // anim = owner.anim;
             attackDistance = owner.attackDistance;
         }
         public override void Enter()
         {
-            agent.isStopped = true;
-            anim.SetTrigger("Attack");
+            owner.agent.isStopped = true;
+            owner.anim.SetTrigger("Attack");
         }
         public override void Update()
         {

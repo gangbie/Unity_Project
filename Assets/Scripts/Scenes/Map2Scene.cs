@@ -47,6 +47,9 @@ public class Map2Scene : BaseScene
         {
             playerShooter.SwapGun(famasGun);
         }
+
+        cameraController = player.GetComponent<TPSCameraController>();
+        cameraController.mouseSensitivity = GameManager.data.curMouseSensitivity;
     }
     protected override IEnumerator LoadingRoutine()
     {

@@ -8,13 +8,17 @@ public class TPSCameraController : MonoBehaviour
 {
     [SerializeField] Transform cameraRoot;
     [SerializeField] public Transform aimTarget;
-    [SerializeField] float mouseSensitivity;
     [SerializeField] float lookDistance;
-
+    
+    public int mouseSensitivity;
     private Vector2 lookDelta;
     private float xRotation;
     private float yRotation;
 
+    private void Awake()
+    {
+        mouseSensitivity = 10;
+    }
     private void OnEnable()
     {
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
@@ -57,4 +61,25 @@ public class TPSCameraController : MonoBehaviour
         lookDelta = value.Get<Vector2>();
     }
 
+    private void OnMouseSensitivityUp(InputValue value)
+    {
+        UpdateMouseSensitivityUp();
+    }
+
+    private void OnMouseSensitivityDown(InputValue value)
+    {
+        UpdateMouseSensitivityDown();
+    }
+
+    public void UpdateMouseSensitivityUp()
+    {
+        mouseSensitivity += 1;
+    }
+
+    public void UpdateMouseSensitivityDown()
+    {
+        if (mouseSensitivity <= 1)
+            return;
+        mouseSensitivity -= 1;
+    }
 }

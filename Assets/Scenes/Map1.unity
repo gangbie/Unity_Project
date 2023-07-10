@@ -28931,6 +28931,10 @@ PrefabInstance:
       propertyPath: gameSceneFlow
       value: 
       objectReference: {fileID: 755131001}
+    - target: {fileID: 2692230500493747556, guid: 9805f8c5f4067f44bbc1e45b7d26f4bd, type: 3}
+      propertyPath: mouseSensitivity
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2692230500493747558, guid: 9805f8c5f4067f44bbc1e45b7d26f4bd, type: 3}
       propertyPath: m_RootOrder
       value: 1

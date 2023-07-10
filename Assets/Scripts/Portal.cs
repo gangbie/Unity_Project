@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.Build.Content;
+// using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,6 +10,7 @@ public class Portal : MonoBehaviour
     private GameObject player;
     public LayerMask targetMask;
     public WeaponHolder weaponHolder;
+    public TPSCameraController cameraController;
 
     private Collider col;
 
@@ -20,6 +21,7 @@ public class Portal : MonoBehaviour
         col = GetComponent<Collider>();
         player = GameObject.FindGameObjectWithTag("Player");
         weaponHolder = player.GetComponentInChildren<WeaponHolder>();
+        cameraController = player.GetComponent<TPSCameraController>();
     }
 
     private void OnEnable()
@@ -36,6 +38,7 @@ public class Portal : MonoBehaviour
             if (GameManager.data.GunInfo == "Famas Gun")
                 GameManager.data.curGunNum = 1;
             GameManager.data.life = GameManager.data.Life;
+            GameManager.data.curMouseSensitivity = cameraController.mouseSensitivity;
             GoToNextMap();
             Destroy(gameObject);
         }
